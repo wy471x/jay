@@ -1,0 +1,18 @@
+package com.jay.protocol;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.JsonNode;
+import java.util.List;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+
+public enum SessionSource {
+    @JsonProperty("interactive") INTERACTIVE,
+    @JsonProperty("resume") RESUME,
+    @JsonProperty("fork") FORK,
+    @JsonProperty("api") API,
+    @JsonProperty("unknown") UNKNOWN
+}

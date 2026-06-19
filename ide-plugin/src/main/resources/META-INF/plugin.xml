@@ -1,0 +1,11 @@
+<idea-plugin>
+    <id>com.jay.ide</id>
+    <name>Jay — Coding Agent</name>
+    <vendor>Jay</vendor>
+    <description>AI-powered coding assistant for JetBrains IDEs</description>
+    <depends>com.intellij.modules.platform</depends>
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="Jay" anchor="right" icon="AllIcons.Actions.Annotate"
+                    factoryClass="com.jay.ide.JayToolWindowFactory"/>
+    </extensions>
+</idea-plugin>

@@ -1,0 +1,30 @@
+spring:
+  application.name: jay
+  threads.virtual.enabled: true
+  datasource:
+    url: jdbc:sqlite:jay.db
+    driver-class-name: org.sqlite.JDBC
+
+jay:
+  default-model: claude-sonnet-4-6
+  max-conversation-turns: 100
+  tool-timeout-ms: 120000
+  tool-approval-required: false
+  database:
+    url: jdbc:sqlite:jay.db
+    driver: org.sqlite.JDBC
+  security:
+    keystore-path: jay.keystore
+    keystore-type: PKCS12
+  mcp:
+    server-port: 0
+    connect-timeout-ms: 30000
+  logging:
+    level: INFO
+    json-format: false
+
+server:
+  port: 8080
+
+management:
+  endpoints.web.exposure.include: health,metrics,info

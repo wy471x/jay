@@ -1,0 +1,14 @@
+package com.jay.protocol.fleet;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record FleetSecretRef(String key, @JsonProperty("source") String source) {
+
+    @JsonCreator
+    public static FleetSecretRef from(String value) {
+        return new FleetSecretRef(value, null);
+    }
+}
