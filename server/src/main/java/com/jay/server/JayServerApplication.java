@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
  * HTTP server entry point — Spring Boot Web replacing Rust's axum + tower-http.
  * Provides REST API, WebSocket, and SSE endpoints for the web frontend.
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.jay")
 @Import(AgentRuntime.class)
 public class JayServerApplication {
 

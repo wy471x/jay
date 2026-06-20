@@ -14,4 +14,5 @@ include(
     "server",
     "jayflow",
     "tui",
+    "hooks",
 )

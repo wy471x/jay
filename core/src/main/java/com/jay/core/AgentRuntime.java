@@ -2,7 +2,9 @@ package com.jay.core;
 
 import com.jay.agent.ModelRegistry;
 import com.jay.tools.ToolRegistry;
-import com.jay.execpolicy.PolicyEngine;
+import com.jay.execpolicy.ExecPolicyEngine;
+
+import java.util.List;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -36,8 +38,8 @@ public class AgentRuntime {
     }
 
     @Bean
-    public PolicyEngine policyEngine() {
-        return new PolicyEngine();
+    public ExecPolicyEngine policyEngine() {
+        return new ExecPolicyEngine(List.of(), List.of());
     }
 
     @Bean
