@@ -1,6 +1,6 @@
 package com.jay.execpolicy;
 
-import com.jay.protocol.NetworkPolicyAmendment;
+import com.jay.protocol.approval.NetworkPolicyAmendment;
 import java.util.List;
 
 public sealed interface ExecApprovalRequirement {

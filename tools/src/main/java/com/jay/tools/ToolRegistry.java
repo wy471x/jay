@@ -1,8 +1,8 @@
 package com.jay.tools;
 
-import com.jay.protocol.ToolKind;
-import com.jay.protocol.ToolOutput;
-import com.jay.protocol.ToolPayload;
+import com.jay.protocol.core.ToolKind;
+import com.jay.protocol.core.ToolOutput;
+import com.jay.protocol.core.ToolPayload;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

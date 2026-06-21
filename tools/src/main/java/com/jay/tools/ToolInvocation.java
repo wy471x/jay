@@ -1,6 +1,6 @@
 package com.jay.tools;
 
-import com.jay.protocol.ToolPayload;
+import com.jay.protocol.core.ToolPayload;
 
 /**
  * A validated tool invocation ready to be handled. Equivalent to Rust's ToolInvocation.

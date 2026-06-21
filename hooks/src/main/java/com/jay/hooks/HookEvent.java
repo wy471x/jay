@@ -3,7 +3,7 @@ package com.jay.hooks;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.jay.protocol.EventFrame;
+import com.jay.protocol.core.EventFrame;
 
 /**
  * Lifecycle hook event — equivalent to Rust's HookEvent enum with 7 variants.

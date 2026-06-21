@@ -9,10 +9,10 @@ import com.jay.execpolicy.ExecPolicyEngine;
 import com.jay.execpolicy.ExecPolicyContext;
 import com.jay.execpolicy.ExecPolicyDecision;
 import com.jay.protocol.*;
-import com.jay.protocol.AskForApproval;
+import com.jay.protocol.approval.AskForApproval;
 import com.jay.tools.ToolRegistry;
 import com.jay.tools.ToolCall;
-import com.jay.protocol.ToolOutput;
+import com.jay.protocol.core.ToolOutput;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

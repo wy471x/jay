@@ -1,7 +1,7 @@
 package com.jay.execpolicy;
 
-import com.jay.protocol.AskForApproval;
-import com.jay.protocol.NetworkPolicyRuleAction;
+import com.jay.protocol.approval.AskForApproval;
+import com.jay.protocol.approval.NetworkPolicyRuleAction;
 import org.junit.jupiter.api.*;
 
 import java.util.*;

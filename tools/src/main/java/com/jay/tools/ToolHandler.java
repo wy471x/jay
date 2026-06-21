@@ -1,7 +1,7 @@
 package com.jay.tools;
 
-import com.jay.protocol.ToolKind;
-import com.jay.protocol.ToolOutput;
+import com.jay.protocol.core.ToolKind;
+import com.jay.protocol.core.ToolOutput;
 
 /**
  * Interface for concrete tool handlers. Equivalent to Rust's ToolHandler trait.

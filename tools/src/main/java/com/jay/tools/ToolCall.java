@@ -1,8 +1,8 @@
 package com.jay.tools;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.jay.protocol.ToolPayload;
-import com.jay.protocol.LocalShellParams;
+import com.jay.protocol.core.ToolPayload;
+import com.jay.protocol.core.LocalShellParams;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 

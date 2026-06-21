@@ -1,6 +1,6 @@
 package com.jay.execpolicy;
 
-import com.jay.protocol.AskForApproval;
+import com.jay.protocol.approval.AskForApproval;
 
 public record ExecPolicyContext(
     String command,

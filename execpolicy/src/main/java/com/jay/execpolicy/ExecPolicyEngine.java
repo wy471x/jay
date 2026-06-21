@@ -1,8 +1,8 @@
 package com.jay.execpolicy;
 
-import com.jay.protocol.AskForApproval;
-import com.jay.protocol.NetworkPolicyAmendment;
-import com.jay.protocol.NetworkPolicyRuleAction;
+import com.jay.protocol.approval.AskForApproval;
+import com.jay.protocol.approval.NetworkPolicyAmendment;
+import com.jay.protocol.approval.NetworkPolicyRuleAction;
 
 import java.util.*;
 
