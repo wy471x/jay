@@ -1,6 +1,7 @@
 package com.jay.state.support;
 
-import com.jay.state.*;
+import com.jay.state.model.*;
+import com.jay.state.store.*;
 
 import org.springframework.data.repository.CrudRepository;
 
@@ -58,6 +59,17 @@ public class TestRepositories {
         @Override public void setCurrentLeafId(String id, Long leafId) {
             data.computeIfPresent(id, (k, t) -> withLeaf(t, leafId));
         }
+        @Override public void setMemoryMode(String id, String mode) {
+            data.computeIfPresent(id, (k, t) -> new ThreadEntity(t.id(), t.rolloutPath(), t.preview(),
+                    t.ephemeral(), t.modelProvider(), t.createdAt(), t.updatedAt(), t.status(),
+                    t.path(), t.cwd(), t.cliVersion(), t.source(), t.title(),
+                    t.sandboxPolicy(), t.approvalMode(), t.archived(), t.archivedAt(),
+                    t.gitSha(), t.gitBranch(), t.gitOriginUrl(), mode, t.currentLeafId()));
+        }
+        @Override public String getMemoryMode(String id) {
+            var t = data.get(id);
+            return t != null ? t.memoryMode() : null;
+        }
         private ThreadEntity with(ThreadEntity t, boolean archived, Long at) {
             return new ThreadEntity(t.id(), t.rolloutPath(), t.preview(), t.ephemeral(), t.modelProvider(),
                     t.createdAt(), t.updatedAt(), t.status(), t.path(), t.cwd(), t.cliVersion(), t.source(),
@@ -113,6 +125,16 @@ public class TestRepositories {
         @Override public List<MessageEntity> findChildren(String tid, long pid) {
             return data.values().stream()
                     .filter(m -> m.threadId().equals(tid) && m.parentEntryId() != null && m.parentEntryId() == pid)
+                    .toList();
+        }
+        @Override public List<MessageEntity> findLeafMessages(String tid) {
+            var parentIds = new HashSet<Long>();
+            data.values().stream()
+                    .filter(m -> m.threadId().equals(tid) && m.parentEntryId() != null)
+                    .forEach(m -> parentIds.add(m.parentEntryId()));
+            return data.values().stream()
+                    .filter(m -> m.threadId().equals(tid) && !parentIds.contains(m.id()))
+                    .sorted(Comparator.comparingLong(MessageEntity::createdAt).reversed())
                     .toList();
         }
     }

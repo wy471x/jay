@@ -1,5 +1,7 @@
 package com.jay.state;
 
+import com.jay.state.model.*;
+import com.jay.state.store.StateStore;
 import com.jay.state.support.TestRepositories.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,7 +75,7 @@ class StateStoreTest {
                 null, null, null, true, NOW, null, null, null, null, null);
         store.upsertThread(archived);
 
-        var active = store.listThreads(false, 50);
+        var active = store.listThreads(new ThreadListFilters(false, 50));
         assertEquals(2, active.size());
         assertTrue(active.stream().noneMatch(t -> t.id().equals("thr-3")));
     }
@@ -86,7 +88,7 @@ class StateStoreTest {
                 null, null, null, true, NOW, null, null, null, null, null);
         store.upsertThread(archived);
 
-        var all = store.listThreads(true, 50);
+        var all = store.listThreads(new ThreadListFilters(true, 50));
         assertEquals(2, all.size());
     }
 

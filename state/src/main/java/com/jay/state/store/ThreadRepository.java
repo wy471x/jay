@@ -1,5 +1,6 @@
-package com.jay.state;
+package com.jay.state.store;
 
+import com.jay.state.model.ThreadEntity;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -36,4 +37,11 @@ public interface ThreadRepository extends CrudRepository<ThreadEntity, String> {
     @Modifying
     @Query("UPDATE threads SET current_leaf_id = :leafId WHERE id = :id")
     void setCurrentLeafId(@Param("id") String id, @Param("leafId") Long leafId);
+
+    @Modifying
+    @Query("UPDATE threads SET memory_mode = :mode WHERE id = :id")
+    void setMemoryMode(@Param("id") String id, @Param("mode") String mode);
+
+    @Query("SELECT memory_mode FROM threads WHERE id = :id")
+    String getMemoryMode(@Param("id") String id);
 }

@@ -1,9 +1,9 @@
-package com.jay.state;
+package com.jay.state.model;
 
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
- * Named checkpoint for thread state. Equivalent to Rust's CheckpointRecord.
+ * Named checkpoint for thread state.
  */
 @Table("checkpoints")
 public record CheckpointEntity(

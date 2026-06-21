@@ -1,11 +1,10 @@
-package com.jay.state;
+package com.jay.state.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
  * Persistent thread metadata — equivalent to Rust's ThreadMetadata.
- * Spring Data JDBC maps this record to the 'threads' table.
  */
 @Table("threads")
 public record ThreadEntity(

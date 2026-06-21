@@ -1,10 +1,10 @@
-package com.jay.state;
+package com.jay.state.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
- * Persisted background job state. Equivalent to Rust's JobStateRecord.
+ * Persisted background job state.
  */
 @Table("jobs")
 public record JobEntity(

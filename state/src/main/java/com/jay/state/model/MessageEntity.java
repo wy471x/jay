@@ -1,11 +1,10 @@
-package com.jay.state;
+package com.jay.state.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
  * Persisted message record with tree-structured branching.
- * Equivalent to Rust's MessageRecord.
  */
 @Table("messages")
 public record MessageEntity(

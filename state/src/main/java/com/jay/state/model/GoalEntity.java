@@ -1,10 +1,10 @@
-package com.jay.state;
+package com.jay.state.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
- * Persisted thread goal state. Equivalent to Rust's ThreadGoalRecord.
+ * Persisted thread goal state.
  */
 @Table("thread_goals")
 public record GoalEntity(

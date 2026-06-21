@@ -1,5 +1,6 @@
-package com.jay.state;
+package com.jay.state.store;
 
+import com.jay.state.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,9 +11,6 @@ import java.util.Optional;
  * Persistent state store backed by SQLite with Flyway migrations.
  * Equivalent to Rust's StateStore — provides CRUD for threads,
  * messages, checkpoints, jobs, goals, and dynamic tools.
- * <p>
- * Spring Data JDBC replaces ~1,200 lines of hand-written SQL
- * from the Rust state crate with declarative repository interfaces.
  */
 @Service
 @Transactional
@@ -48,8 +46,19 @@ public class StateStore {
     }
 
     @Transactional(readOnly = true)
-    public List<ThreadEntity> listThreads(boolean includeArchived, int limit) {
-        return includeArchived ? threads.listAll(limit) : threads.listActive(limit);
+    public List<ThreadEntity> listThreads(ThreadListFilters filters) {
+        return filters.includeArchived()
+            ? threads.listAll(filters.limit())
+            : threads.listActive(filters.limit());
+    }
+
+    public void deleteThread(String id) {
+        threads.findById(id).ifPresent(t -> {
+            dynamicTools.deleteByThreadId(id);
+            goals.deleteById(id);
+            checkpoints.deleteByThreadId(id);
+            threads.delete(t);
+        });
     }
 
     public void archiveThread(String id, long archivedAt) {
@@ -70,6 +79,17 @@ public class StateStore {
 
     public void setCurrentLeafId(String threadId, long leafId) {
         threads.setCurrentLeafId(threadId, leafId);
+    }
+
+    // ── Memory mode ───────────────────────────────────────────
+
+    public void setThreadMemoryMode(String id, String mode) {
+        threads.setMemoryMode(id, mode);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<String> getThreadMemoryMode(String id) {
+        return Optional.ofNullable(threads.getMemoryMode(id));
     }
 
     // ── Messages ──────────────────────────────────────────────
@@ -93,6 +113,11 @@ public class StateStore {
     @Transactional(readOnly = true)
     public List<MessageEntity> listMessageChildren(String threadId, long parentId) {
         return messages.findChildren(threadId, parentId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MessageEntity> listLeafMessages(String threadId) {
+        return messages.findLeafMessages(threadId);
     }
 
     // ── Checkpoints ───────────────────────────────────────────
