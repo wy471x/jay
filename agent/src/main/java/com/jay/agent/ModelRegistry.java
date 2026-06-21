@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Registry of supported models and their aliases, used to resolve user-facing
@@ -52,7 +53,7 @@ public class ModelRegistry {
 
             // Step 1: Ollama passthrough
             if (providerHint == ProviderKind.OLLAMA) {
-                return new ModelResolution(requested,
+                return new ModelResolution(Optional.ofNullable(requested),
                         new ModelInfo(requested.trim(), ProviderKind.OLLAMA,
                                 List.of(), true, false),
                         false, chain);
@@ -64,7 +65,7 @@ public class ModelRegistry {
                         .filter(m -> m.provider() == providerHint && modelMatches(m, requested))
                         .findFirst();
                 if (match.isPresent()) {
-                    return new ModelResolution(requested, match.get(), false, chain);
+                    return new ModelResolution(Optional.ofNullable(requested), match.get(), false, chain);
                 }
             }
 
@@ -72,19 +73,19 @@ public class ModelRegistry {
             if (providerHint == ProviderKind.ATLASCLOUD) {
                 var passthrough = atlascloudPassthrough(requested);
                 if (passthrough != null) {
-                    return new ModelResolution(requested, passthrough, false, chain);
+                    return new ModelResolution(Optional.ofNullable(requested), passthrough, false, chain);
                 }
             }
             if (providerHint == ProviderKind.ARCEE) {
                 var passthrough = arceePassthrough(requested);
                 if (passthrough != null) {
-                    return new ModelResolution(requested, passthrough, false, chain);
+                    return new ModelResolution(Optional.ofNullable(requested), passthrough, false, chain);
                 }
             }
             if (providerHint == ProviderKind.XIAOMI_MIMO) {
                 var passthrough = xiaomiMimoPassthrough(requested);
                 if (passthrough != null) {
-                    return new ModelResolution(requested, passthrough, false, chain);
+                    return new ModelResolution(Optional.ofNullable(requested), passthrough, false, chain);
                 }
             }
 
@@ -92,7 +93,7 @@ public class ModelRegistry {
             var idx = aliasMap.get(normalize(requested));
             if (idx != null) {
                 var model = preserveRequestedModelIdCase(models.get(idx), requested);
-                return new ModelResolution(requested, model, false, chain);
+                return new ModelResolution(Optional.ofNullable(requested), model, false, chain);
             }
         }
 
@@ -103,7 +104,7 @@ public class ModelRegistry {
                 .filter(m -> m.provider() == provider)
                 .findFirst();
         if (providerDefault.isPresent()) {
-            return new ModelResolution(requested, providerDefault.get(), true, chain);
+            return new ModelResolution(Optional.ofNullable(requested), providerDefault.get(), true, chain);
         }
 
         // Step 6: Global fallback
@@ -111,7 +112,7 @@ public class ModelRegistry {
                 ? new ModelInfo("deepseek-v4-pro", ProviderKind.DEEPSEEK, List.of(), true, true)
                 : models.getFirst();
         chain.add("global_default:deepseek-v4-pro");
-        return new ModelResolution(requested, globalFallback, true, chain);
+        return new ModelResolution(Optional.ofNullable(requested), globalFallback, true, chain);
     }
 
     // ---- helpers ----
