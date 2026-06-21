@@ -15,4 +15,5 @@ include(
     "jayflow",
     "tui",
     "hooks",
+    "release",
 )
