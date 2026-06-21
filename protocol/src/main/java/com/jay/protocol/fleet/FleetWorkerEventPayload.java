@@ -38,7 +38,7 @@ public sealed interface FleetWorkerEventPayload {
     record ModelWait(String model) implements FleetWorkerEventPayload {}
     record RunningTool(String tool, @JsonProperty("call_id") String callId) implements FleetWorkerEventPayload {}
     record Heartbeat(@JsonProperty("cpu_percent") Float cpuPercent, @JsonProperty("memory_mb") Long memoryMb) implements FleetWorkerEventPayload {}
-    record Artifact(List<FleetArtifactRef> artifacts) implements FleetWorkerEventPayload {}
+    record Artifact(FleetArtifactRef artifact) implements FleetWorkerEventPayload {}
     record Completed(@JsonProperty("exit_code") Integer exitCode, String summary) implements FleetWorkerEventPayload {}
     record Failed(String reason, boolean recoverable) implements FleetWorkerEventPayload {}
     record Cancelled(@JsonProperty("cancelled_by") String cancelledBy) implements FleetWorkerEventPayload {}

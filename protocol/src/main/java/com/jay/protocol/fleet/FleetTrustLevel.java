@@ -13,10 +13,17 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 
 public enum FleetTrustLevel {
-    @JsonProperty("sandbox") SANDBOX,
-    @JsonProperty("local") LOCAL,
-    @JsonProperty("remote_verified") REMOTE_VERIFIED,
-    @JsonProperty("operator") OPERATOR
+    @JsonProperty("sandbox") SANDBOX(0),
+    @JsonProperty("local") LOCAL(1),
+    @JsonProperty("remote_verified") REMOTE_VERIFIED(2),
+    @JsonProperty("operator") OPERATOR(3);
+
+    private final int level;
+    FleetTrustLevel(int level) { this.level = level; }
+
+    public boolean mayAccessSecrets() { return level >= REMOTE_VERIFIED.level; }
+    public boolean mayWriteWorkspace() { return level >= LOCAL.level; }
+    public boolean mayAccessNetwork() { return level >= LOCAL.level; }
 }
 
 // ---- FleetSecurityPolicy ----

@@ -1,5 +1,8 @@
 package com.jay.protocol;
 
+import com.jay.protocol.core.*;
+import com.jay.protocol.mcp.*;
+import com.jay.protocol.params.*;
 import com.jay.protocol.runtime.RuntimeEventEnvelope;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
