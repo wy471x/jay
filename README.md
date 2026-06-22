@@ -22,8 +22,9 @@
   <img src="https://img.shields.io/badge/Java-21%2B-ED8B00?style=flat-square&logo=openjdk&logoColor=white" alt="Java 21+">
   <img src="https://img.shields.io/badge/Gradle-9.6-02303A?style=flat-square&logo=gradle&logoColor=white" alt="Gradle 9.6">
   <img src="https://img.shields.io/badge/Spring_Boot-3.4-6DB33F?style=flat-square&logo=springboot&logoColor=white" alt="Spring Boot 3.4">
+  <img src="https://img.shields.io/badge/TamboUI-0.3.0-6366F1?style=flat-square" alt="TamboUI">
   <img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT License">
-  <img src="https://img.shields.io/badge/modules-16-6C8EBF?style=flat-square" alt="16 modules">
+  <img src="https://img.shields.io/badge/modules-17-6C8EBF?style=flat-square" alt="17 modules">
 </p>
 
 ---
@@ -31,11 +32,13 @@
 ## Features
 
 - **Multi-provider LLM support** — 80+ built-in models across 20+ providers (DeepSeek, Anthropic, OpenAI, NVIDIA, OpenRouter, and more)
+- **Terminal UI (TamboUI)** — Ratatui-inspired declarative TUI with sidebar, transcript, composer, footer, modal view stack, command palette, and slash commands
 - **Layered execution policy engine** — deny-always-wins, arity-aware command matching, typed ask rules, session approval cache
 - **MCP (Model Context Protocol)** — full JSON-RPC 2.0 stdio server with 14 methods for tool/resource lifecycle management
 - **Workflow engine (WhaleFlow)** — IR compilation, validation, mock/replay execution, teacher/promotion system
 - **Spring Boot HTTP server** — REST API with bearer-token auth, CORS, OpenAI-compatible chat completions proxy
 - **Hook event system** — pluggable sinks (stdout, JSONL) for lifecycle observability
+- **Next.js web frontend** — bilingual (EN/ZH) community site with live GitHub feed, curated dispatch, and admin panel
 - **Virtual threads** — Project Loom (Java 21+) for lightweight concurrency throughout
 - **Sealed class + Record types** — exhaustive pattern matching matching Rust's enum semantics
 
@@ -45,7 +48,10 @@
 
 ```text
 ┌─────────────────────────────────────────────────────────────┐
-│                          CLI (picocli)                       │
+│                     CLI (picocli)                            │
+├─────────────────────────────────────────────────────────────┤
+│                  Terminal UI (TamboUI)                       │
+│  sidebar │ transcript │ composer │ footer │ modals          │
 ├─────────────────────────────────────────────────────────────┤
 │                     HTTP Server (Spring Boot)                │
 │  /healthz  /thread  /app  /prompt  /tool  /jobs  /mcp/*    │
@@ -71,6 +77,7 @@ Jay is a Java port of the [CodeWhale](https://github.com/deepseek-ai/codewhale) 
 
 - **Java 21+** — [Adoptium](https://adoptium.net/) or [Oracle JDK](https://jdk.java.net/21/)
 - **Gradle 9.6+** — included via wrapper (run `gradle wrapper` first) or install via [Homebrew](https://brew.sh) (`brew install gradle`)
+- **Node.js 20+** — for the web frontend (optional)
 
 ### Build
 
@@ -102,6 +109,20 @@ curl http://localhost:8080/healthz
 # {"status":"ok","protocol":"v2","service":"jay-app-server"}
 ```
 
+### Run the TUI
+
+```bash
+gradle :tui:bootRun
+```
+
+### Run the web frontend
+
+```bash
+cd web
+npm install
+npm run dev         # http://localhost:3000
+```
+
 ---
 
 ## Modules
@@ -121,16 +142,25 @@ curl http://localhost:8080/healthz
 | [`server`](server/) | Spring Boot HTTP/WebSocket server | `AppController`, `ChatCompletionsController` |
 | [`cli`](cli/) | Picocli command-line interface | `JayCli` |
 | [`jayflow`](jayflow/) | Workflow engine (IR, compiler, executor) | `WorkflowConfig`, `WhaleFlowEngine` |
-| [`tui`](tui/) | Terminal UI (stub) | `JayTui` |
+| [`tui`](tui/) | Terminal UI — TamboUI, modals, command palette | `TuiEngine`, `TuiView`, `AppState`, `CommandPalette` |
+| [`web`](web/) | Next.js bilingual community site | Pages, components, API routes, cron jobs |
+| [`ide-plugin`](ide-plugin/) | IntelliJ IDE plugin | `JayPlugin` |
+| [`release`](release/) | Release metadata and update checking | `ReleaseChecker`, `ReleaseFetcher` |
 
 ---
 
 ## Development
 
-### Project stats
+### Code quality
 
-```text
-251 Java source files  ·  13,464 lines of code  ·  16 Gradle submodules
+The project uses [Checkstyle](https://checkstyle.org/) with a configuration based on [Apache SkyWalking](https://github.com/apache/skywalking)'s code standards. Configuration lives at `config/checkstyle/checkstyle.xml`.
+
+```bash
+# Run checkstyle across all modules
+gradle checkstyleMain
+
+# Checkstyle + compile in one pass
+gradle checkstyleMain compileJava
 ```
 
 ### Running tests
@@ -144,6 +174,7 @@ gradle :execpolicy:test
 gradle :mcp:test
 gradle :server:test
 gradle :hooks:test
+gradle :tui:test
 ```
 
 ### Key conventions
@@ -152,8 +183,10 @@ gradle :hooks:test
 - **Jackson** `@JsonTypeInfo` / `@JsonSubTypes` for polymorphic JSON serialization
 - **Spring Boot** auto-configuration with `@ConfigurationProperties`
 - **Virtual threads** via `Executors.newVirtualThreadPerTaskExecutor()`
+- **TamboUI** declarative TUI framework (Ratatui-inspired) for terminal rendering
 - **Constructor injection** — no `@Autowired` on fields
 - **JUnit Jupiter 5.11** with standalone MockMvc for controller tests
+- **Checkstyle 10.21.1** with SkyWalking-style rules for consistent code style
 
 ### Module dependency graph
 
@@ -168,10 +201,11 @@ tools            → protocol
 mcp              → protocol, tools
 hooks            → protocol
 jayflow          → core, protocol
-tui              → core, protocol
+tui              → core, protocol, agent, tools, state, hooks, config
 cli              → core, protocol
 server           → core, protocol, execpolicy, tools, agent
 core             → protocol, agent, tools, execpolicy, config, state
+web              (standalone — Next.js frontend, depends on server REST API)
 ```
 
 ---
@@ -183,12 +217,15 @@ core             → protocol, agent, tools, execpolicy, config, state
 | Language | Java 21 LTS (Virtual Threads) |
 | Build | Gradle 9.6 (Kotlin DSL) |
 | Framework | Spring Boot 3.4.7 |
+| Terminal UI | TamboUI 0.3.0 (Panama backend) |
+| Web Frontend | Next.js 15 + Tailwind CSS + Cloudflare Workers |
 | HTTP Server | Tomcat (embedded) |
 | JSON | Jackson 2.18 |
 | Database | SQLite via JDBC + Flyway |
 | CLI | Picocli |
 | Testing | JUnit Jupiter 5.11 + MockMvc |
 | Security | JDK KeyStore + AES-GCM |
+| Code Quality | Checkstyle 10.21 (SkyWalking rules) |
 
 ---
 
