@@ -6,4 +6,4 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @JsonInclude(NON_NULL)
 public record ThreadStartParams(String model, @JsonProperty("model_provider") String modelProvider,
-        String cwd, @JsonProperty(value = "persist_extended_history", defaultValue = "false") boolean persistExtendedHistory) {}
+        String cwd, @JsonProperty(value = "persist_extended_history", defaultValue = "false") boolean persistExtendedHistory) { }

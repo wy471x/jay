@@ -10,4 +10,4 @@ public record BranchCandidate(
         WorkflowRunStatus status,
         int score,
         long cost,
-        @JsonProperty("diversity_key") String diversityKey) {}
+        @JsonProperty("diversity_key") String diversityKey) { }

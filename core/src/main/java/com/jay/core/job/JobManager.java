@@ -5,8 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jay.state.model.JobEntity;
 import com.jay.state.store.StateStore;
 
-import java.util.*;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Manages background jobs with exponential backoff retry and versioned JSON persistence.
@@ -14,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class JobManager {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final int MAX_HISTORY = 64;
     static final int JOB_DETAIL_SCHEMA_VERSION = 1;
 
@@ -154,19 +157,19 @@ public class JobManager {
 
     private void persistJob(JobRecord job) {
         try {
-            String detailJson = mapper.writeValueAsString(new JobDetailV1(
+            String detailJson = MAPPER.writeValueAsString(new JobDetailV1(
                 JOB_DETAIL_SCHEMA_VERSION, job.status().toStoreValue(),
                 job.detail(), job.retry(), job.history()));
             store.upsertJob(new JobEntity(job.id(), job.name(),
                 job.status().toStoreValue(), job.progress(),
                 detailJson, job.createdAt(), job.updatedAt()));
-        } catch (JsonProcessingException ignored) {}
+        } catch (JsonProcessingException ignored) { }
     }
 
     private JobRecord loadFromStore(JobEntity rec) {
         try {
             if (rec.detail() != null && !rec.detail().isEmpty()) {
-                var detail = mapper.readValue(rec.detail(), JobDetailV1.class);
+                var detail = MAPPER.readValue(rec.detail(), JobDetailV1.class);
                 return new JobRecord(rec.id(), rec.name(),
                     JobStatus.fromStoreValue(rec.status()),
                     rec.progress() != null ? rec.progress() : 0, rec.detail(),
@@ -174,7 +177,7 @@ public class JobManager {
                     detail.history() != null ? detail.history() : List.of(),
                     rec.createdAt(), rec.updatedAt());
             }
-        } catch (JsonProcessingException ignored) {}
+        } catch (JsonProcessingException ignored) { }
         return new JobRecord(rec.id(), rec.name(),
             JobStatus.fromStoreValue(rec.status()),
             rec.progress() != null ? rec.progress() : 0, rec.detail(),

@@ -30,4 +30,4 @@ public record ThreadEntity(
         String gitOriginUrl,
         String memoryMode,
         Long currentLeafId
-) {}
+) { }

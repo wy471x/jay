@@ -5,7 +5,7 @@ import java.util.List;
 
 /** File scope overlap detection. Equivalent to Rust's scopes_overlap + normalize_scope. */
 public final class ScopeOverlap {
-    private ScopeOverlap() {}
+    private ScopeOverlap() { }
 
     public static boolean overlaps(List<String> left, List<String> right) {
         return left.stream().anyMatch(ls ->

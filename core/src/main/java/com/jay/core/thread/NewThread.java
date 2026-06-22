@@ -7,4 +7,4 @@ public record NewThread(
     String cwd,
     String approvalPolicy,
     String sandbox
-) {}
+) { }

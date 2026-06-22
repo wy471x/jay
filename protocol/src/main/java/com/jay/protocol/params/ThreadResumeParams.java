@@ -12,4 +12,4 @@ public record ThreadResumeParams(@JsonProperty("thread_id") String threadId, Lis
         String cwd, @JsonProperty("approval_policy") String approvalPolicy,
         String sandbox, JsonNode config, @JsonProperty("base_instructions") String baseInstructions,
         @JsonProperty("developer_instructions") String developerInstructions,
-        String personality, @JsonProperty(value = "persist_extended_history", defaultValue = "false") boolean persistExtendedHistory) {}
+        String personality, @JsonProperty(value = "persist_extended_history", defaultValue = "false") boolean persistExtendedHistory) { }

@@ -6,4 +6,4 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ResolvedModel(
         ModelRole role, String provider, String model,
-        ModelCapabilities capabilities, ModelSelectionSource source) {}
+        ModelCapabilities capabilities, ModelSelectionSource source) { }

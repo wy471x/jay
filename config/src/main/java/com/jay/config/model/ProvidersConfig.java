@@ -78,53 +78,102 @@ public class ProvidersConfig {
 
     // Getters/setters for Jackson
     public ProviderConfigToml deepseek() { return deepseek; }
+
     public void deepseek(ProviderConfigToml v) { deepseek = v; }
+
     public ProviderConfigToml nvidiaNim() { return nvidiaNim; }
+
     public void nvidiaNim(ProviderConfigToml v) { nvidiaNim = v; }
+
     public ProviderConfigToml openai() { return openai; }
+
     public void openai(ProviderConfigToml v) { openai = v; }
+
     public ProviderConfigToml atlascloud() { return atlascloud; }
+
     public void atlascloud(ProviderConfigToml v) { atlascloud = v; }
+
     public ProviderConfigToml wanjieArk() { return wanjieArk; }
+
     public void wanjieArk(ProviderConfigToml v) { wanjieArk = v; }
+
     public ProviderConfigToml volcengine() { return volcengine; }
+
     public void volcengine(ProviderConfigToml v) { volcengine = v; }
+
     public ProviderConfigToml openrouter() { return openrouter; }
+
     public void openrouter(ProviderConfigToml v) { openrouter = v; }
+
     public ProviderConfigToml xiaomiMimo() { return xiaomiMimo; }
+
     public void xiaomiMimo(ProviderConfigToml v) { xiaomiMimo = v; }
+
     public ProviderConfigToml novita() { return novita; }
+
     public void novita(ProviderConfigToml v) { novita = v; }
+
     public ProviderConfigToml fireworks() { return fireworks; }
+
     public void fireworks(ProviderConfigToml v) { fireworks = v; }
+
     public ProviderConfigToml siliconflow() { return siliconflow; }
+
     public void siliconflow(ProviderConfigToml v) { siliconflow = v; }
+
     public ProviderConfigToml arcee() { return arcee; }
+
     public void arcee(ProviderConfigToml v) { arcee = v; }
+
     public ProviderConfigToml siliconflowCN() { return siliconflowCN; }
+
     public void siliconflowCN(ProviderConfigToml v) { siliconflowCN = v; }
+
     public ProviderConfigToml moonshot() { return moonshot; }
+
     public void moonshot(ProviderConfigToml v) { moonshot = v; }
+
     public ProviderConfigToml sglang() { return sglang; }
+
     public void sglang(ProviderConfigToml v) { sglang = v; }
+
     public ProviderConfigToml vllm() { return vllm; }
+
     public void vllm(ProviderConfigToml v) { vllm = v; }
+
     public ProviderConfigToml ollama() { return ollama; }
+
     public void ollama(ProviderConfigToml v) { ollama = v; }
+
     public ProviderConfigToml huggingface() { return huggingface; }
+
     public void huggingface(ProviderConfigToml v) { huggingface = v; }
+
     public ProviderConfigToml together() { return together; }
+
     public void together(ProviderConfigToml v) { together = v; }
+
     public ProviderConfigToml openaiCodex() { return openaiCodex; }
+
     public void openaiCodex(ProviderConfigToml v) { openaiCodex = v; }
+
     public ProviderConfigToml anthropic() { return anthropic; }
+
     public void anthropic(ProviderConfigToml v) { anthropic = v; }
+
     public ProviderConfigToml zai() { return zai; }
+
     public void zai(ProviderConfigToml v) { zai = v; }
+
     public ProviderConfigToml stepfun() { return stepfun; }
+
     public void stepfun(ProviderConfigToml v) { stepfun = v; }
+
     public ProviderConfigToml minimax() { return minimax; }
+
     public void minimax(ProviderConfigToml v) { minimax = v; }
+
     public ProviderConfigToml deepinfra() { return deepinfra; }
+
     public void deepinfra(ProviderConfigToml v) { deepinfra = v; }
 }

@@ -12,7 +12,7 @@ public final class TuiBinaryLocator {
     private static final String TUI_BIN_ENV = "JAY_TUI_BIN";
     private static final String LEGACY_TUI_BIN_ENV = "CODEWHALE_TUI_BIN";
 
-    private TuiBinaryLocator() {}
+    private TuiBinaryLocator() { }
 
     /** Locate the TUI binary, checking env vars then siblings. */
     public static Path locate() {

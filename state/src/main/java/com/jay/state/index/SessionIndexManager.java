@@ -3,9 +3,18 @@ package com.jay.state.index;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Append-only JSONL session index for fast name-based thread lookups
@@ -14,7 +23,7 @@ import java.util.*;
  */
 public class SessionIndexManager {
 
-    private static final ObjectMapper jsonMapper = new ObjectMapper();
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     private final Path indexPath;
 
@@ -36,7 +45,7 @@ public class SessionIndexManager {
         try {
             Files.createDirectories(indexPath.getParent());
             var entry = new SessionIndexEntry(threadId, threadName, updatedAt, rolloutPath);
-            String line = jsonMapper.writeValueAsString(entry);
+            String line = JSON_MAPPER.writeValueAsString(entry);
             Files.writeString(indexPath, line + "\n",
                 StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         } catch (IOException e) {
@@ -90,7 +99,7 @@ public class SessionIndexManager {
             for (String line : Files.readAllLines(indexPath)) {
                 if (line.isBlank()) continue;
                 try {
-                    var entry = jsonMapper.readValue(line, SessionIndexEntry.class);
+                    var entry = JSON_MAPPER.readValue(line, SessionIndexEntry.class);
                     map.put(entry.threadId(), entry);  // last write wins
                 } catch (JsonProcessingException ignored) {
                     // skip corrupt lines
@@ -104,5 +113,5 @@ public class SessionIndexManager {
 
     // ── Inner type ─────────────────────────────────────────────
 
-    record SessionIndexEntry(String threadId, String threadName, long updatedAt, String rolloutPath) {}
+    record SessionIndexEntry(String threadId, String threadName, long updatedAt, String rolloutPath) { }
 }

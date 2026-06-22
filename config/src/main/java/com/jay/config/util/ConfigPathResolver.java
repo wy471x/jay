@@ -26,7 +26,7 @@ public final class ConfigPathResolver {
     private static final String CODEWHALE_CONFIG_PATH_ENV = "CODEWHALE_CONFIG_PATH";
     private static final String LEGACY_CONFIG_PATH_ENV = "DEEPSEEK_CONFIG_PATH";
 
-    private ConfigPathResolver() {}
+    private ConfigPathResolver() { }
 
     /** Resolve the primary config directory. */
     public static Path appDir() {

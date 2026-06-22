@@ -17,7 +17,7 @@ import java.time.Instant;
  */
 public class JsonlHookSink implements HookSink {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private final Path path;
 
@@ -30,11 +30,11 @@ public class JsonlHookSink implements HookSink {
         try {
             Files.createDirectories(path.getParent());
 
-            ObjectNode envelope = mapper.createObjectNode();
+            ObjectNode envelope = MAPPER.createObjectNode();
             envelope.put("at", Instant.now().toString());
-            envelope.set("event", mapper.valueToTree(event));
+            envelope.set("event", MAPPER.valueToTree(event));
 
-            String line = mapper.writeValueAsString(envelope) + "\n";
+            String line = MAPPER.writeValueAsString(envelope) + "\n";
             Files.writeString(path, line,
                 StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         } catch (IOException ignored) {

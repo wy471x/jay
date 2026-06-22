@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface McpManagedClient {
     List<McpToolDescriptor> listTools();
+
     JsonNode callTool(String toolName, JsonNode arguments);
+
     List<McpResourceDescriptor> listResources();
+
     JsonNode readResource(String uri);
 }

@@ -8,10 +8,12 @@ import picocli.CommandLine.Option;
 
 import java.io.Console;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 /** Configure provider credentials interactively or via flags. */
 @Command(name = "login", description = "Configure provider credentials")
 public class LoginCommand implements Callable<Integer> {
+    private static final Logger LOGGER = Logger.getLogger(LoginCommand.class.getName());
 
     @Option(names = {"--provider"}, description = "Provider to log into",
             converter = ProviderKindConverter.class)
@@ -29,21 +31,21 @@ public class LoginCommand implements Callable<Integer> {
             if (console != null) {
                 key = new String(console.readPassword("API key for " + p.id() + ": "));
             } else {
-                System.err.println("No console available. Use --api-key to provide the key.");
+                LOGGER.severe("No console available. Use --api-key to provide the key.");
                 return 1;
             }
         }
         if (key == null || key.isBlank()) {
-            System.err.println("No API key provided.");
+            LOGGER.severe("No API key provided.");
             return 1;
         }
         try {
             SecretsStore store = SecretsStore.autoDetect();
             store.set(p.id(), key);
-            System.out.println("Logged in to " + p.id());
+            LOGGER.info("Logged in to " + p.id());
             return 0;
         } catch (Exception e) {
-            System.err.println("Failed to save credentials: " + e.getMessage());
+            LOGGER.severe("Failed to save credentials: " + e.getMessage());
             return 1;
         }
     }

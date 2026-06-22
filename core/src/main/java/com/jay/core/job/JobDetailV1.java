@@ -9,4 +9,4 @@ public record JobDetailV1(
     @JsonProperty("detail") String detail,
     @JsonProperty("retry") JobRetryMetadata retry,
     @JsonProperty("history") List<JobHistoryEntry> history
-) {}
+) { }

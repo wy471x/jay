@@ -18,4 +18,4 @@ public record GoalEntity(
         long continuationCount,
         long createdAt,
         long updatedAt
-) {}
+) { }

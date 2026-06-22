@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class WorkflowBuilder {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private WorkflowSpec workflow;
     private final List<String> nodeTokens = new ArrayList<>();
@@ -25,7 +25,7 @@ public class WorkflowBuilder {
 
     /** Encode a WorkflowNode to a JSON token string. Equivalent to Rust's encode_node(). */
     public String encodeNode(WorkflowNode node) {
-        try { return mapper.writeValueAsString(node); }
+        try { return MAPPER.writeValueAsString(node); }
         catch (JsonProcessingException e) { throw new RuntimeException("failed to encode node", e); }
     }
 
@@ -35,14 +35,14 @@ public class WorkflowBuilder {
     /** Decode all accumulated node tokens into WorkflowNode list. Equivalent to Rust's decode_nodes(). */
     public List<WorkflowNode> decodeNodes() {
         return nodeTokens.stream().map(token -> {
-            try { return mapper.readValue(token, WorkflowNode.class); }
+            try { return MAPPER.readValue(token, WorkflowNode.class); }
             catch (JsonProcessingException e) { throw new RuntimeException("failed to decode node token", e); }
         }).toList();
     }
 
     /** Decode a single JSON token string to a WorkflowNode. Equivalent to Rust's decode_node(). */
     public WorkflowNode decodeNode(String token) {
-        try { return mapper.readValue(token, WorkflowNode.class); }
+        try { return MAPPER.readValue(token, WorkflowNode.class); }
         catch (JsonProcessingException e) { throw new RuntimeException("failed to decode node token: " + token, e); }
     }
 

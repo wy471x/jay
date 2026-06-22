@@ -38,7 +38,7 @@ public final class ProviderDefaults {
         entry(ProviderKind.DEEPINFRA, "deepseek-ai/DeepSeek-V4-Pro", "https://api.deepinfra.com/v1/openai")
     );
 
-    private ProviderDefaults() {}
+    private ProviderDefaults() { }
 
     public static String defaultModel(ProviderKind kind) {
         ProviderEntry e = DEFAULTS.get(kind);
@@ -62,5 +62,5 @@ public final class ProviderDefaults {
         return Map.entry(kind, new ProviderEntry(model, baseUrl));
     }
 
-    private record ProviderEntry(String model, String baseUrl) {}
+    private record ProviderEntry(String model, String baseUrl) { }
 }

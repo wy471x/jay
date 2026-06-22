@@ -1,7 +1,8 @@
 package com.jay.jayflow.authoring.js;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.jay.jayflow.ir.*;
+import com.jay.jayflow.ir.WorkflowConfig;
+import com.jay.jayflow.ir.WorkflowNode;
 import com.jay.jayflow.ir.spec.BranchSpec;
 import java.util.List;
 

@@ -4,8 +4,10 @@ import com.jay.protocol.core.ToolKind;
 import com.jay.protocol.core.ToolOutput;
 import com.jay.protocol.core.ToolPayload;
 
-import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -23,7 +25,7 @@ public class ToolRegistry {
     private final ReentrantReadWriteLock executionLock = new ReentrantReadWriteLock();
     private static final ThreadLocal<Boolean> LOCK_HELD = ThreadLocal.withInitial(() -> false);
 
-    public record ConfiguredToolSpec(ToolSpec spec, boolean supportsParallelToolCalls) {}
+    public record ConfiguredToolSpec(ToolSpec spec, boolean supportsParallelToolCalls) { }
 
     public void register(ToolSpec spec, ToolHandler handler) {
         specs.put(spec.name(), new ConfiguredToolSpec(spec, spec.supportsParallelToolCalls()));

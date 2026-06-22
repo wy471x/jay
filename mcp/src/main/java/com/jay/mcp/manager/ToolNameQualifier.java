@@ -10,7 +10,7 @@ public final class ToolNameQualifier {
     private static final int MAX_LEN = 64;
     private static final String PREFIX = "mcp__";
 
-    private ToolNameQualifier() {}
+    private ToolNameQualifier() { }
 
     public static String qualify(String serverName, String toolName) {
         String srv = sanitize(serverName);
@@ -56,7 +56,7 @@ public final class ToolNameQualifier {
         StringBuilder sb = new StringBuilder(input.length());
         for (int i = 0; i < input.length(); i++) {
             char ch = input.charAt(i);
-            if ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch == '_') {
+            if (ch >= 'a' && ch <= 'z' || ch >= '0' && ch <= '9' || ch == '_') {
                 sb.append(ch);
             } else if (ch >= 'A' && ch <= 'Z') {
                 sb.append((char) (ch + 32));

@@ -9,7 +9,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * JSON-on-disk secret store. Equivalent to Rust's FileKeyringStore.
@@ -21,7 +23,7 @@ import java.util.*;
  */
 public class FileKeyringStore implements KeyringStore {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
     static final String BACKEND_NAME = "file-based (~/.codewhale/secrets/)";
 
     private final Path path;
@@ -154,7 +156,7 @@ public class FileKeyringStore implements KeyringStore {
                 return new FileSecretsBlob(new LinkedHashMap<>());
             }
             String content = Files.readString(path);
-            return mapper.readValue(content, FileSecretsBlob.class);
+            return MAPPER.readValue(content, FileSecretsBlob.class);
         } catch (IOException e) {
             throw SecretsError.io(e);
         } catch (Exception e) {
@@ -164,7 +166,7 @@ public class FileKeyringStore implements KeyringStore {
 
     static void storeFile(Path path, FileSecretsBlob blob) throws SecretsError {
         try {
-            String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(blob);
+            String json = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(blob);
             Files.writeString(path, json);
             if (!isWindows()) {
                 try {
@@ -205,6 +207,7 @@ public class FileKeyringStore implements KeyringStore {
         Map<String, String> entries;
 
         FileSecretsBlob() { this.entries = new LinkedHashMap<>(); }
+
         FileSecretsBlob(Map<String, String> entries) { this.entries = entries; }
     }
 }

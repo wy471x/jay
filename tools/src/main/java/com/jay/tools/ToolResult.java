@@ -13,7 +13,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonInclude(NON_NULL)
 public record ToolResult(String content, boolean success, JsonNode metadata) {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     public static ToolResult success(String content) {
         return new ToolResult(content, true, null);
@@ -25,7 +25,7 @@ public record ToolResult(String content, boolean success, JsonNode metadata) {
 
     public static ToolResult json(Object value) {
         try {
-            return new ToolResult(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(value),
+            return new ToolResult(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(value),
                     true, null);
         } catch (JsonProcessingException e) {
             return new ToolResult("{\"error\":\"serialization failed\"}", false, null);

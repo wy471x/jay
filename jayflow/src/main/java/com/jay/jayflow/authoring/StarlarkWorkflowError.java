@@ -6,9 +6,9 @@ public sealed interface StarlarkWorkflowError
                StarlarkWorkflowError.InvalidNode, StarlarkWorkflowError.InvalidEnum,
                StarlarkWorkflowError.Starlark {
 
-    record UnsupportedConstruct(String construct) implements StarlarkWorkflowError {}
-    record MissingWorkflow() implements StarlarkWorkflowError {}
-    record InvalidNode(String reason) implements StarlarkWorkflowError {}
-    record InvalidEnum(String field, String value) implements StarlarkWorkflowError {}
-    record Starlark(String reason) implements StarlarkWorkflowError {}
+    record UnsupportedConstruct(String construct) implements StarlarkWorkflowError { }
+    record MissingWorkflow() implements StarlarkWorkflowError { }
+    record InvalidNode(String reason) implements StarlarkWorkflowError { }
+    record InvalidEnum(String field, String value) implements StarlarkWorkflowError { }
+    record Starlark(String reason) implements StarlarkWorkflowError { }
 }

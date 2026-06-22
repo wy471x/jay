@@ -20,19 +20,34 @@ public class ProviderConfigToml {
     @JsonProperty("path_suffix") private String pathSuffix;
 
     public String apiKey() { return apiKey; }
+
     public void apiKey(String v) { apiKey = v; }
+
     public String baseUrl() { return baseUrl; }
+
     public void baseUrl(String v) { baseUrl = v; }
+
     public String model() { return model; }
+
     public void model(String v) { model = v; }
+
     public String mode() { return mode; }
+
     public void mode(String v) { mode = v; }
+
     public String authMode() { return authMode; }
+
     public void authMode(String v) { authMode = v; }
+
     public Boolean insecureSkipTlsVerify() { return insecureSkipTlsVerify; }
+
     public void insecureSkipTlsVerify(Boolean v) { insecureSkipTlsVerify = v; }
+
     public Map<String, String> httpHeaders() { return httpHeaders; }
+
     public void httpHeaders(Map<String, String> v) { httpHeaders = v; }
+
     public String pathSuffix() { return pathSuffix; }
+
     public void pathSuffix(String v) { pathSuffix = v; }
 }

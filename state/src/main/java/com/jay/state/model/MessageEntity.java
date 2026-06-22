@@ -15,4 +15,4 @@ public record MessageEntity(
         String itemJson,
         long createdAt,
         Long parentEntryId
-) {}
+) { }

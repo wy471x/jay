@@ -10,4 +10,4 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonInclude(NON_NULL)
 public record CondSpec(String id, String condition,
         @JsonProperty("then_nodes") List<WorkflowNode> thenNodes,
-        @JsonProperty("else_nodes") List<WorkflowNode> elseNodes) {}
+        @JsonProperty("else_nodes") List<WorkflowNode> elseNodes) { }

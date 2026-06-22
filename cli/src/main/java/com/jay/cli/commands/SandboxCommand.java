@@ -9,10 +9,12 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 /** Evaluate sandbox/approval policy decisions. */
 @Command(name = "sandbox", description = "Evaluate sandbox/approval policy decisions")
 public class SandboxCommand implements Callable<Integer> {
+    private static final Logger LOGGER = Logger.getLogger(SandboxCommand.class.getName());
 
     @Option(names = {"--check"}, description = "Check command against policy")
     String checkCommand;
@@ -28,7 +30,7 @@ public class SandboxCommand implements Callable<Integer> {
     public Integer call() {
         String command = checkCommand != null ? checkCommand : positionalCommand;
         if (command == null || command.isBlank()) {
-            System.err.println("No command provided. Use: jay sandbox --check 'rm -rf /'");
+            LOGGER.severe("No command provided. Use: jay sandbox --check 'rm -rf /'");
             return 1;
         }
 
@@ -38,7 +40,7 @@ public class SandboxCommand implements Callable<Integer> {
             case "on-failure" -> new AskForApproval.OnFailure();
             case "on-request" -> new AskForApproval.OnRequest();
             default -> {
-                System.err.println("Unknown approval mode: " + ask);
+                LOGGER.severe("Unknown approval mode: " + ask);
                 yield new AskForApproval.OnRequest();
             }
         };
@@ -52,15 +54,15 @@ public class SandboxCommand implements Callable<Integer> {
                 System.getProperty("user.dir"), null, null, askMode, "workspace");
         var decision = engine.check(ctx);
 
-        System.out.println("Command:       " + command);
-        System.out.println("Approval mode: " + ask);
-        System.out.println("Allowed:       " + decision.allow());
-        System.out.println("Needs approval:" + decision.requiresApproval());
+        LOGGER.info("Command:       " + command);
+        LOGGER.info("Approval mode: " + ask);
+        LOGGER.info("Allowed:       " + decision.allow());
+        LOGGER.info("Needs approval:" + decision.requiresApproval());
         if (decision.requirement() != null) {
-            System.out.println("Requirement:   " + decision.requirement());
+            LOGGER.info("Requirement:   " + decision.requirement());
         }
         if (decision.matchedRule() != null) {
-            System.out.println("Matched rule:  " + decision.matchedRule());
+            LOGGER.info("Matched rule:  " + decision.matchedRule());
         }
         return decision.allow() ? 0 : 1;
     }

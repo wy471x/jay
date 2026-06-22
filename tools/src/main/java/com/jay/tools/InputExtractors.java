@@ -9,7 +9,7 @@ import java.util.Optional;
  * required_str, optional_str, required_u64, optional_u64, optional_bool.
  */
 public final class InputExtractors {
-    private InputExtractors() {}
+    private InputExtractors() { }
 
     public static String requiredStr(JsonNode input, String field) {
         var node = input.get(field);

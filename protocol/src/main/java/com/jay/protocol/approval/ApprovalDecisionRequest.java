@@ -6,4 +6,4 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @JsonInclude(NON_NULL)
 public record ApprovalDecisionRequest(String decision,
-        @JsonProperty(value = "remember", defaultValue = "false") boolean remember) {}
+        @JsonProperty(value = "remember", defaultValue = "false") boolean remember) { }

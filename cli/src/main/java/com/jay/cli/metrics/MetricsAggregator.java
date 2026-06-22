@@ -7,7 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Aggregates usage metrics from audit logs, session files, and runtime event streams.
@@ -22,9 +23,9 @@ import java.util.*;
  */
 public class MetricsAggregator {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public MetricsAggregator() {}
+    public MetricsAggregator() { }
 
     /** Produce a usage rollup from all data sources. */
     public Rollup aggregate(Instant since) throws IOException {
@@ -72,16 +73,16 @@ public class MetricsAggregator {
         try (var lines = Files.lines(path)) {
             lines.forEach(line -> {
                 try {
-                    var node = mapper.readTree(line);
+                    var node = MAPPER.readTree(line);
                     Instant ts = parseTimestamp(node);
                     if (ts != null && ts.isBefore(since)) return;
                     String event = node.has("event") ? node.get("event").asText() : "";
                     if (event.contains("credential") || event.contains("auth")) rollup.credentials++;
                     else if (event.contains("approval")) rollup.approvals++;
                     else rollup.auditEvents++;
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) { }
             });
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) { }
     }
 
     private void readSessionFiles(Path dir, Instant since, Rollup rollup) {
@@ -90,7 +91,7 @@ public class MetricsAggregator {
             entries.filter(p -> p.toString().endsWith(".json")).forEach(path -> {
                 try {
                     String content = Files.readString(path);
-                    var node = mapper.readTree(content);
+                    var node = MAPPER.readTree(content);
                     Instant ts = parseTimestamp(node);
                     if (ts != null && ts.isBefore(since)) return;
                     rollup.sessions++;
@@ -101,9 +102,9 @@ public class MetricsAggregator {
                     if (node.has("compactions")) {
                         rollup.compactions += node.get("compactions").asInt();
                     }
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) { }
             });
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) { }
     }
 
     private void readRuntimeEvents(Path dir, Instant since, Rollup rollup) {
@@ -113,16 +114,16 @@ public class MetricsAggregator {
                 try (var lines = Files.lines(path)) {
                     lines.forEach(line -> {
                         try {
-                            var node = mapper.readTree(line);
+                            var node = MAPPER.readTree(line);
                             Instant ts = parseTimestamp(node);
                             if (ts != null && ts.isBefore(since)) return;
                             rollup.runtimeEvents++;
                             if (node.has("agent") || node.has("model")) rollup.agentTurns++;
-                        } catch (Exception ignored) {}
+                        } catch (Exception ignored) { }
                     });
-                } catch (IOException ignored) {}
+                } catch (IOException ignored) { }
             });
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) { }
     }
 
     private Instant parseTimestamp(com.fasterxml.jackson.databind.JsonNode node) {
@@ -131,7 +132,10 @@ public class MetricsAggregator {
         else if (node.has("ts")) ts = node.get("ts").asText(null);
         else if (node.has("created_at")) ts = node.get("created_at").asText(null);
         if (ts == null) return null;
-        try { return Instant.parse(ts); } catch (Exception e) { return null; }
+        try {
+                return Instant.parse(ts);
+                } catch (Exception e) { return null;
+            }
     }
 
     // ── Home directory ────────────────────────────────────────────────

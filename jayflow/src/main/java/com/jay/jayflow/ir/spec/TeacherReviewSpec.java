@@ -8,4 +8,4 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 /** Equivalent to Rust's TeacherReviewSpec. */
 @JsonInclude(NON_NULL)
 public record TeacherReviewSpec(String id, List<String> candidates,
-        WorkflowConfig.PromotionPolicy promotionPolicy) {}
+        WorkflowConfig.PromotionPolicy promotionPolicy) { }

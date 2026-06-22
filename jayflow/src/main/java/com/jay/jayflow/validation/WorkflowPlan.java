@@ -1,6 +1,11 @@
 package com.jay.jayflow.validation;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import com.jay.jayflow.ir.FailurePolicy;
 import com.jay.jayflow.ir.TaskMode;
 import com.jay.jayflow.ir.WorkflowConfig;
@@ -9,7 +14,7 @@ import com.jay.jayflow.ir.WorkflowConfig;
 public record WorkflowPlan(String goal, int maxConcurrent, List<PhasePlan> phases) {
 
     public record PhasePlan(String name, boolean parallel, FailurePolicy onFailure,
-                             List<WorkflowConfig.Task> tasks) {}
+                             List<WorkflowConfig.Task> tasks) { }
 
     public static WorkflowPlan fromConfig(WorkflowConfig config) {
         var goal = config.goal();

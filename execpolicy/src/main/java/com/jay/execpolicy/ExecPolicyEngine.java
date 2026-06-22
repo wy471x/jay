@@ -4,7 +4,12 @@ import com.jay.protocol.approval.AskForApproval;
 import com.jay.protocol.approval.NetworkPolicyAmendment;
 import com.jay.protocol.approval.NetworkPolicyRuleAction;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Layered execution policy engine. Evaluates whether tool invocations
@@ -96,7 +101,7 @@ public class ExecPolicyEngine {
 
                 if (best == null
                     || rs.layer().priority() > bestLayer.priority()
-                    || (rs.layer() == bestLayer && rule.specificity() > bestSpecificity)) {
+                    || rs.layer() == bestLayer && rule.specificity() > bestSpecificity) {
                     best = rule;
                     bestLayer = rs.layer();
                     bestSpecificity = rule.specificity();

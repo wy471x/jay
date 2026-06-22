@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /** JSON repair utilities. Equivalent to Rust's repair_json_text_once + parse_json_with_repair. */
 public final class JsonRepair {
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private JsonRepair() {}
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private JsonRepair() { }
 
     public static <T> T parseWithRepair(String raw, Class<T> type) {
-        try { return mapper.readValue(raw, type); } catch (Exception first) {
-            try { return mapper.readValue(repairOnce(raw), type); } catch (Exception second) {
+        try { return MAPPER.readValue(raw, type); } catch (Exception first) {
+            try { return MAPPER.readValue(repairOnce(raw), type); } catch (Exception second) {
                 throw new JsonRepairError("parse: " + first.getMessage() + "; repair failed: " + second.getMessage());
             }
         }

@@ -5,4 +5,4 @@ public record ExecPolicyDecision(
     boolean requiresApproval,
     ExecApprovalRequirement requirement,
     String matchedRule
-) {}
+) { }

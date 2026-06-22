@@ -45,7 +45,7 @@ public class JsWorkflowNode {
 
     /** Custom deserializer: tries deserializing as each variant. */
     public static class Deserializer extends JsonDeserializer<JsWorkflowNode> {
-        private static final ObjectMapper mapper = new ObjectMapper()
+        private static final ObjectMapper MAPPER = new ObjectMapper()
                 .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
 
         @Override
@@ -56,18 +56,18 @@ public class JsWorkflowNode {
             // Try Raw first (has "kind" field)
             if (node.has("kind")) {
                 result.kind = Kind.RAW;
-                result.raw = mapper.treeToValue(node, WorkflowNode.class);
+                result.raw = MAPPER.treeToValue(node, WorkflowNode.class);
                 return result;
             }
             // Dispatch by wrapper key name
-            if (node.has("agent"))             { result.kind = Kind.AGENT; result.agent = mapper.treeToValue(node, JsAgentNode.class); }
-            else if (node.has("branch"))       { result.kind = Kind.BRANCH; result.branch = mapper.treeToValue(node, JsBranchNode.class); }
-            else if (node.has("sequence"))     { result.kind = Kind.SEQUENCE; result.sequence = mapper.treeToValue(node, JsSequenceNode.class); }
-            else if (node.has("reduce"))       { result.kind = Kind.REDUCE; result.reduce = mapper.treeToValue(node, JsReduceNode.class); }
-            else if (node.has("teacher_review")) { result.kind = Kind.TEACHER_REVIEW; result.teacherReview = mapper.treeToValue(node, JsTeacherReviewNode.class); }
-            else if (node.has("loop_until"))   { result.kind = Kind.LOOP_UNTIL; result.loopUntil = mapper.treeToValue(node, JsLoopUntilNode.class); }
-            else if (node.has("cond"))         { result.kind = Kind.COND; result.cond = mapper.treeToValue(node, JsCondNode.class); }
-            else if (node.has("expand"))       { result.kind = Kind.EXPAND; result.expand = mapper.treeToValue(node, JsExpandNode.class); }
+            if (node.has("agent"))             { result.kind = Kind.AGENT; result.agent = MAPPER.treeToValue(node, JsAgentNode.class); }
+            else if (node.has("branch"))       { result.kind = Kind.BRANCH; result.branch = MAPPER.treeToValue(node, JsBranchNode.class); }
+            else if (node.has("sequence"))     { result.kind = Kind.SEQUENCE; result.sequence = MAPPER.treeToValue(node, JsSequenceNode.class); }
+            else if (node.has("reduce"))       { result.kind = Kind.REDUCE; result.reduce = MAPPER.treeToValue(node, JsReduceNode.class); }
+            else if (node.has("teacher_review")) { result.kind = Kind.TEACHER_REVIEW; result.teacherReview = MAPPER.treeToValue(node, JsTeacherReviewNode.class); }
+            else if (node.has("loop_until"))   { result.kind = Kind.LOOP_UNTIL; result.loopUntil = MAPPER.treeToValue(node, JsLoopUntilNode.class); }
+            else if (node.has("cond"))         { result.kind = Kind.COND; result.cond = MAPPER.treeToValue(node, JsCondNode.class); }
+            else if (node.has("expand"))       { result.kind = Kind.EXPAND; result.expand = MAPPER.treeToValue(node, JsExpandNode.class); }
             else throw new IOException("unknown JS workflow node type: " + node);
             return result;
         }

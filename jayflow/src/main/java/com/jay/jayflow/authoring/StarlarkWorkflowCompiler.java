@@ -3,11 +3,27 @@ package com.jay.jayflow.authoring;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jay.jayflow.authoring.StarlarkWorkflowCompiler.StarlarkCompileException;
-import com.jay.jayflow.ir.*;
-import com.jay.jayflow.ir.spec.*;
+import com.jay.jayflow.ir.AgentType;
+import com.jay.jayflow.ir.IsolationMode;
+import com.jay.jayflow.ir.PromotionStrategy;
+import com.jay.jayflow.ir.TaskMode;
+import com.jay.jayflow.ir.WorkflowConfig;
+import com.jay.jayflow.ir.WorkflowNode;
+import com.jay.jayflow.ir.WorkflowSpec;
+import com.jay.jayflow.ir.spec.BranchSpec;
+import com.jay.jayflow.ir.spec.CondSpec;
+import com.jay.jayflow.ir.spec.ExpandSpec;
+import com.jay.jayflow.ir.spec.LeafSpec;
+import com.jay.jayflow.ir.spec.LoopUntilSpec;
+import com.jay.jayflow.ir.spec.ReduceSpec;
+import com.jay.jayflow.ir.spec.SequenceSpec;
+import com.jay.jayflow.ir.spec.TeacherReviewSpec;
 import com.jay.jayflow.validation.WorkflowNodeValidator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Compiles Starlark workflow source files using a lightweight recursive-descent
@@ -20,9 +36,9 @@ public final class StarlarkWorkflowCompiler {
         {"load(", "load"}, {"import ", "import"}, {"class ", "class"},
         {"while ", "while"}, {"async ", "async"}, {"await ", "await"}, {"open(", "open"},
     };
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    private StarlarkWorkflowCompiler() {}
+    private StarlarkWorkflowCompiler() { }
 
     // ── Public API ──────────────────────────────────────────────
 

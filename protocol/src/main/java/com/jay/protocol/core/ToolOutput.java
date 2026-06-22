@@ -13,6 +13,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 })
 public sealed interface ToolOutput {
     @JsonInclude(NON_NULL)
-    record Function(JsonNode body, boolean success) implements ToolOutput {}
-    record Mcp(JsonNode result) implements ToolOutput {}
+    record Function(JsonNode body, boolean success) implements ToolOutput { }
+
+    record Mcp(JsonNode result) implements ToolOutput { }
 }

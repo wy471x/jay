@@ -68,7 +68,7 @@ public final class ProviderEnv {
         Map.entry("codex", "openai-codex")
     );
 
-    private ProviderEnv() {}
+    private ProviderEnv() { }
 
     /**
      * Resolve the first non-empty environment variable for a provider name.

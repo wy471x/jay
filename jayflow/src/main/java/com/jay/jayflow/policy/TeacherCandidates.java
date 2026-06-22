@@ -1,6 +1,7 @@
 package com.jay.jayflow.policy;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import com.jay.jayflow.execution.BranchResult;
 import com.jay.jayflow.execution.ControlNodeResult;
 import com.jay.jayflow.execution.LeafResult;
@@ -13,7 +14,7 @@ import com.jay.jayflow.ir.WorkflowRunStatus;
  * Ported from Rust's teacher_candidates_from_execution + helper functions.
  */
 public final class TeacherCandidates {
-    private TeacherCandidates() {}
+    private TeacherCandidates() { }
 
     public static List<TeacherCandidate> fromExecution(WorkflowNode.TeacherReview review,
                                                         WorkflowExecution execution) {

@@ -12,4 +12,4 @@ public record DynamicToolEntity(
         String name,
         String description,
         String inputSchema
-) {}
+) { }

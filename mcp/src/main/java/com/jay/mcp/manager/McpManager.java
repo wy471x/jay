@@ -8,14 +8,21 @@ import com.jay.mcp.config.McpServerConfig;
 import com.jay.mcp.config.ToolFilter;
 import com.jay.mcp.descriptor.McpResourceDescriptor;
 import com.jay.mcp.descriptor.McpToolDescriptor;
-import com.jay.mcp.lifecycle.*;
+import com.jay.mcp.lifecycle.McpStartupCompleteEvent;
+import com.jay.mcp.lifecycle.McpStartupFailure;
+import com.jay.mcp.lifecycle.McpStartupStatus;
+import com.jay.mcp.lifecycle.McpStartupUpdateEvent;
 
-import java.util.*;
+import java.util.ArrayList;
 import java.util.function.Consumer;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class McpManager {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     final Map<String, McpServerConfig> configs = new LinkedHashMap<>();
     private final Map<String, ToolFilter> filters = new LinkedHashMap<>();
@@ -146,10 +153,10 @@ public class McpManager {
     public List<JsonNode> updateSandboxState(String sandboxMode, String cwd) {
         List<JsonNode> notices = new ArrayList<>();
         for (String serverName : configs.keySet()) {
-            ObjectNode notice = mapper.createObjectNode();
+            ObjectNode notice = MAPPER.createObjectNode();
             notice.put("server_name", serverName);
             notice.put("method", "codex/sandbox-state/update");
-            ObjectNode params = mapper.createObjectNode();
+            ObjectNode params = MAPPER.createObjectNode();
             params.put("sandbox_mode", sandboxMode);
             params.put("cwd", cwd);
             notice.set("params", params);

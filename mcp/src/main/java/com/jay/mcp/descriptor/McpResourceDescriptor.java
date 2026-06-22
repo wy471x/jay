@@ -8,4 +8,4 @@ public record McpResourceDescriptor(
     @JsonProperty("server_name") String serverName,
     String uri,
     String description
-) {}
+) { }

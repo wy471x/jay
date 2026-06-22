@@ -14,4 +14,4 @@ public record WorkflowSpec(
         WorkflowConfig.PermissionSpec permissions,
         WorkflowConfig.ModelPolicy modelPolicy,
         WorkflowConfig.PromotionPolicy promotionPolicy,
-        List<WorkflowNode> nodes) {}
+        List<WorkflowNode> nodes) { }

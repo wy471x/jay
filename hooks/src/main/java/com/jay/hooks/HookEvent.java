@@ -29,23 +29,23 @@ public sealed interface HookEvent {
     }
 
     /** A text chunk arrived for an in-progress response. */
-    record ResponseDelta(String responseId, String delta) implements HookEvent {}
+    record ResponseDelta(String responseId, String delta) implements HookEvent { }
 
     /** A response stream finished. */
-    record ResponseEnd(String responseId) implements HookEvent {}
+    record ResponseEnd(String responseId) implements HookEvent { }
 
     /** A tool invocation changed phase (start, end, error, etc.). */
     record ToolLifecycle(String responseId, String toolName, String phase, JsonNode payload)
-            implements HookEvent {}
+            implements HookEvent { }
 
     /** A background job changed phase (queued, running, done, etc.). */
     record JobLifecycle(String jobId, String phase, Integer progress, String detail)
-            implements HookEvent {}
+            implements HookEvent { }
 
     /** An approval request changed phase (requested, approved, denied, etc.). */
     record ApprovalLifecycle(String approvalId, String phase, String reason)
-            implements HookEvent {}
+            implements HookEvent { }
 
     /** Catch-all wrapping an arbitrary protocol-level EventFrame. */
-    record GenericEventFrame(EventFrame frame) implements HookEvent {}
+    record GenericEventFrame(EventFrame frame) implements HookEvent { }
 }

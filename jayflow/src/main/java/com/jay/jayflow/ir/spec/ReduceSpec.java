@@ -8,4 +8,4 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 /** Equivalent to Rust's ReduceSpec. */
 @JsonInclude(NON_NULL)
 public record ReduceSpec(String id, List<String> inputs, String prompt,
-        WorkflowConfig.ModelPolicy modelPolicy) {}
+        WorkflowConfig.ModelPolicy modelPolicy) { }

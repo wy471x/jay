@@ -14,7 +14,7 @@ import com.jay.jayflow.validation.WorkflowNodeValidator;
  */
 public final class JavascriptWorkflowCompiler {
 
-    private static final ObjectMapper mapper = new ObjectMapper()
+    private static final ObjectMapper MAPPER = new ObjectMapper()
             .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
 
     private static final String[][] BLOCKED = {
@@ -26,7 +26,7 @@ public final class JavascriptWorkflowCompiler {
         {"async ", "async"}, {"await ", "await"}, {"eval(", "eval"}, {"new Function", "Function"},
     };
 
-    private JavascriptWorkflowCompiler() {}
+    private JavascriptWorkflowCompiler() { }
 
     public static WorkflowSpec compileJavascript(String identifier, String source)
             throws JavascriptWorkflowCompileException {
@@ -43,7 +43,7 @@ public final class JavascriptWorkflowCompiler {
         rejectUnsupportedConstructs(source);
         var json = extractWorkflowObject(source);
         JsWorkflowSpec authored;
-        try { authored = mapper.readValue(json, JsWorkflowSpec.class); }
+        try { authored = MAPPER.readValue(json, JsWorkflowSpec.class); }
         catch (Exception e) { throw new JavascriptWorkflowCompileException(new JavascriptWorkflowError.InvalidJson(e.getMessage())); }
         var workflow = authored.toWorkflow();
         if (workflow.goal() == null || workflow.goal().trim().isEmpty())

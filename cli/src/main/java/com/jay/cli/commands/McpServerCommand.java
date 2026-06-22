@@ -4,10 +4,12 @@ import com.jay.cli.CliSpringContext;
 import picocli.CommandLine.Command;
 
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 /** Run MCP server mode over stdio. */
 @Command(name = "mcp-server", description = "Run MCP server mode over stdio")
 public class McpServerCommand implements Callable<Integer> {
+    private static final Logger LOGGER = Logger.getLogger(McpServerCommand.class.getName());
 
     @Override
     public Integer call() {
@@ -15,15 +17,15 @@ public class McpServerCommand implements Callable<Integer> {
             var mcpManager = CliSpringContext.getBeanOrNull(
                     com.jay.mcp.manager.McpManager.class);
             if (mcpManager == null) {
-                System.err.println("MCP manager not available. Ensure Spring context is initialized.");
+                LOGGER.severe("MCP manager not available. Ensure Spring context is initialized.");
                 return 1;
             }
-            System.out.println("MCP server starting on stdio...");
+            LOGGER.info("MCP server starting on stdio...");
             var server = new com.jay.mcp.rpc.StdioMcpServer();
             server.run(java.util.List.of());
             return 0;
         } catch (Exception e) {
-            System.err.println("MCP server error: " + e.getMessage());
+            LOGGER.severe("MCP server error: " + e.getMessage());
             return 1;
         }
     }

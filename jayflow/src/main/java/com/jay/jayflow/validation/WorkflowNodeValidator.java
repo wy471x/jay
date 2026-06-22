@@ -1,6 +1,8 @@
 package com.jay.jayflow.validation;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import com.jay.jayflow.ir.WorkflowNode;
 
 /**
@@ -8,7 +10,7 @@ import com.jay.jayflow.ir.WorkflowNode;
  * Equivalent to Rust's validate_workflow_nodes / validate_workflow_node_shapes.
  */
 public final class WorkflowNodeValidator {
-    private WorkflowNodeValidator() {}
+    private WorkflowNodeValidator() { }
 
     public static void validate(List<WorkflowNode> nodes) {
         var seen = new HashSet<String>();
@@ -39,7 +41,7 @@ public final class WorkflowNodeValidator {
                     validateInner(spec.thenNodes(), seen);
                     validateInner(spec.elseNodes(), seen);
                 }
-                default -> {}
+                default -> { }
             }
         }
     }
@@ -60,7 +62,7 @@ public final class WorkflowNodeValidator {
                     validateReferences(spec.thenNodes(), known);
                     validateReferences(spec.elseNodes(), known);
                 }
-                default -> {}
+                default -> { }
             }
         }
     }

@@ -9,4 +9,4 @@ public record McpToolDescriptor(
     @JsonProperty("tool_name") String toolName,
     @JsonProperty("qualified_name") String qualifiedName,
     String description
-) {}
+) { }

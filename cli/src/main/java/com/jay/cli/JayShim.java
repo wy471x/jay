@@ -9,7 +9,7 @@ package com.jay.cli;
  */
 public final class JayShim {
 
-    private JayShim() {}
+    private JayShim() { }
 
     public static void main(String[] args) {
         JayCli.main(args);

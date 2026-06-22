@@ -14,4 +14,4 @@ public record LeafResult(
         WorkflowUsage usage,
         @JsonProperty("memo_usage") WorkflowMemoUsage memoUsage,
         String output,
-        @JsonInclude(NON_EMPTY) List<String> artifacts) {}
+        @JsonInclude(NON_EMPTY) List<String> artifacts) { }

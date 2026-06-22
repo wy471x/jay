@@ -8,4 +8,4 @@ public record JsonRpcRequest(
     JsonNode id,
     String method,
     JsonNode params
-) {}
+) { }

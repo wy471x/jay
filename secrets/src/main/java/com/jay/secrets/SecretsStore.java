@@ -111,7 +111,7 @@ public class SecretsStore {
             if (stored != null && !stored.isBlank()) {
                 return Optional.of(new ResolvedSecret(stored, SecretSource.KEYRING));
             }
-        } catch (SecretsError ignored) {}
+        } catch (SecretsError ignored) { }
         String env = ProviderEnv.envFor(name);
         if (env != null && !env.isBlank()) {
             return Optional.of(new ResolvedSecret(env, SecretSource.ENV));
@@ -134,7 +134,7 @@ public class SecretsStore {
         if ("keyring".equals(sourceHint) || "file".equals(sourceHint)) {
             try {
                 return Optional.ofNullable(store.get(key));
-            } catch (SecretsError ignored) {}
+            } catch (SecretsError ignored) { }
             return Optional.empty();
         }
         return resolve(key);
@@ -151,5 +151,5 @@ public class SecretsStore {
     }
 
     /** A resolved secret value paired with its source. */
-    public record ResolvedSecret(String value, SecretSource source) {}
+    public record ResolvedSecret(String value, SecretSource source) { }
 }

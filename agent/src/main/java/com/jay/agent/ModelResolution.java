@@ -12,4 +12,4 @@ public record ModelResolution(
         ModelInfo resolved,
         boolean usedFallback,
         List<String> fallbackChain
-) {}
+) { }

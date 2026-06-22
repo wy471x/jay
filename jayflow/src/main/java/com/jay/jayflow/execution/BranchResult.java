@@ -14,4 +14,4 @@ public record BranchResult(
         WorkflowUsage usage,
         @JsonProperty("memo_usage") WorkflowMemoUsage memoUsage,
         @JsonInclude(NON_EMPTY) List<String> artifacts,
-        String notes) {}
+        String notes) { }

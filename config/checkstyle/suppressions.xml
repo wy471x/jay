@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suppressions PUBLIC
+    "-//Puppy Crawl//DTD Suppression Filter Configuration 1.2//EN"
+    "http://checkstyle.org/dtds/suppressions_1_2.dtd">
+<suppressions>
+    <!-- Suppress checks for test files -->
+    <suppress files=".*[\\/]src[\\/]test[\\/].*" checks="FileLength"/>
+
+    <!-- Suppress magic number checks for test files -->
+    <suppress files=".*[\\/]src[\\/]test[\\/].*" checks="MagicNumber"/>
+
+    <!-- Suppress checks for generated sources -->
+    <suppress files=".*[\\/]generated[\\/].*" checks=".*"/>
+
+    <!-- Suppress System.out checks for intentional stdout sinks -->
+    <suppress files="StdoutHookSink\.java" checks="RegexpSingleline"/>
+
+    <!-- Suppress checks for module-info.java -->
+    <suppress files="module-info\.java" checks=".*"/>
+</suppressions>

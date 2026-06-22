@@ -2,8 +2,19 @@ package com.jay.config.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jay.agent.ProviderKind;
-import com.jay.config.subconfig.*;
-import java.util.*;
+import com.jay.config.subconfig.FleetConfig;
+import com.jay.config.subconfig.HarnessProfile;
+import com.jay.config.subconfig.HookSinksConfig;
+import com.jay.config.subconfig.HotbarBinding;
+import com.jay.config.subconfig.LspConfig;
+import com.jay.config.subconfig.NetworkPolicyConfig;
+import com.jay.config.subconfig.SkillsConfig;
+import com.jay.config.subconfig.SnapshotsConfig;
+import com.jay.config.subconfig.ToolsConfig;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Root configuration data model — equivalent to Rust's ConfigToml.
@@ -44,54 +55,103 @@ public class ConfigToml {
     // ── Getters / Setters ─────────────────────────────────────────
 
     public String apiKey() { return apiKey; }
+
     public void apiKey(String v) { apiKey = v; }
+
     public String baseUrl() { return baseUrl; }
+
     public void baseUrl(String v) { baseUrl = v; }
+
     public Map<String, String> httpHeaders() { return httpHeaders; }
+
     public void httpHeaders(Map<String, String> v) { httpHeaders = v; }
+
     public String defaultTextModel() { return defaultTextModel; }
+
     public void defaultTextModel(String v) { defaultTextModel = v; }
+
     public ProviderKind provider() { return provider; }
+
     public void provider(ProviderKind v) { provider = v; }
+
     public String model() { return model; }
+
     public void model(String v) { model = v; }
+
     public String authMode() { return authMode; }
+
     public void authMode(String v) { authMode = v; }
+
     public String outputMode() { return outputMode; }
+
     public void outputMode(String v) { outputMode = v; }
+
     public String verbosity() { return verbosity; }
+
     public void verbosity(String v) { verbosity = v; }
+
     public String logLevel() { return logLevel; }
+
     public void logLevel(String v) { logLevel = v; }
+
     public Boolean telemetry() { return telemetry; }
+
     public void telemetry(Boolean v) { telemetry = v; }
+
     public String approvalPolicy() { return approvalPolicy; }
+
     public void approvalPolicy(String v) { approvalPolicy = v; }
+
     public String sandboxMode() { return sandboxMode; }
+
     public void sandboxMode(String v) { sandboxMode = v; }
+
     public ToolsConfig tools() { return tools; }
+
     public void tools(ToolsConfig v) { tools = v; }
+
     public ProvidersConfig providers() { return providers; }
+
     public void providers(ProvidersConfig v) { providers = v; }
+
     public List<ProviderKind> fallbackProviders() { return fallbackProviders; }
+
     public void fallbackProviders(List<ProviderKind> v) { fallbackProviders = v; }
+
     public NetworkPolicyConfig network() { return network; }
+
     public void network(NetworkPolicyConfig v) { network = v; }
+
     public SkillsConfig skills() { return skills; }
+
     public void skills(SkillsConfig v) { skills = v; }
+
     public SnapshotsConfig snapshots() { return snapshots; }
+
     public void snapshots(SnapshotsConfig v) { snapshots = v; }
+
     public LspConfig lsp() { return lsp; }
+
     public void lsp(LspConfig v) { lsp = v; }
+
     public List<HarnessProfile> harnessProfiles() { return harnessProfiles; }
+
     public void harnessProfiles(List<HarnessProfile> v) { harnessProfiles = v; }
+
     public List<HotbarBinding> hotbar() { return hotbar; }
+
     public void hotbar(List<HotbarBinding> v) { hotbar = v; }
+
     public HookSinksConfig hookSinks() { return hookSinks; }
+
     public void hookSinks(HookSinksConfig v) { hookSinks = v; }
+
     public FleetConfig fleet() { return fleet; }
+
     public void fleet(FleetConfig v) { fleet = v; }
+
     public Map<String, Object> extras() { return extras; }
+
     public void extras(Map<String, Object> v) { extras = v; }
 
     // ── Merge project overrides ───────────────────────────────────

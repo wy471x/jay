@@ -14,4 +14,4 @@ public record ThreadGoal(
         @JsonProperty("time_used_seconds") long timeUsedSeconds,
         @JsonProperty("continuation_count") long continuationCount,
         @JsonProperty("created_at") long createdAt,
-        @JsonProperty("updated_at") long updatedAt) {}
+        @JsonProperty("updated_at") long updatedAt) { }

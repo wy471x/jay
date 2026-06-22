@@ -6,10 +6,12 @@ import picocli.CommandLine.Option;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 /** Run the runtime API / control plane (HTTP/SSE/mobile/stdio). */
 @Command(name = "app-server", description = "Run the runtime API / control plane (HTTP/SSE/mobile/stdio)")
 public class AppServerCommand implements Callable<Integer> {
+    private static final Logger LOGGER = Logger.getLogger(AppServerCommand.class.getName());
 
     @Option(names = {"--http"}, description = "Full HTTP/SSE runtime API on 127.0.0.1:7878")
     boolean http;
@@ -54,7 +56,7 @@ public class AppServerCommand implements Callable<Integer> {
             System.setProperty("jay.server.mobile", "true");
             System.setProperty("jay.server.host", "0.0.0.0");
         } else if (stdio) {
-            System.out.println("App server stdio mode starting...");
+            LOGGER.info("App server stdio mode starting...");
             System.setProperty("jay.server.stdio", "true");
         } else {
             System.out.printf("App server starting on %s:%d%n", host, port);
@@ -71,8 +73,8 @@ public class AppServerCommand implements Callable<Integer> {
             org.springframework.boot.SpringApplication.run(serverApp);
             return 0;
         } catch (ClassNotFoundException e) {
-            System.err.println("Server module not available on classpath.");
-            System.err.println("Add ':server' dependency to cli/build.gradle.kts");
+            LOGGER.severe("Server module not available on classpath.");
+            LOGGER.severe("Add ':server' dependency to cli/build.gradle.kts");
             return 1;
         }
     }

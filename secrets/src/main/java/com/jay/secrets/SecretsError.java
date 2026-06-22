@@ -44,6 +44,8 @@ public class SecretsError extends Exception {
     }
 
     public Kind kind() { return kind; }
+
     public Path path() { return path; }
+
     public int mode() { return mode; }
 }

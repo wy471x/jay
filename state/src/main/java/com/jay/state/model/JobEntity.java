@@ -15,4 +15,4 @@ public record JobEntity(
         String detail,
         long createdAt,
         long updatedAt
-) {}
+) { }

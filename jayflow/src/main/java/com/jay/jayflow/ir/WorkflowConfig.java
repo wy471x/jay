@@ -26,23 +26,23 @@ public record WorkflowConfig(
     @JsonInclude(NON_NULL)
     public record BudgetSpec(@JsonProperty("max_steps") Integer maxSteps,
                               @JsonProperty("timeout_secs") Long timeoutSecs,
-                              @JsonProperty("max_parallel") Integer maxParallel) {}
+                              @JsonProperty("max_parallel") Integer maxParallel) { }
 
     @JsonInclude(NON_NULL)
     public record PermissionSpec(@JsonProperty("allow_write") boolean allowWrite,
                                   @JsonProperty("allow_network") boolean allowNetwork,
                                   @JsonProperty("allowed_tools") List<String> allowedTools,
-                                  @JsonProperty("file_scope") List<String> fileScope) {}
+                                  @JsonProperty("file_scope") List<String> fileScope) { }
 
     @JsonInclude(NON_NULL)
     public record ModelPolicy(String provider, String model,
-                               @JsonProperty("fallback_models") List<String> fallbackModels) {}
+                               @JsonProperty("fallback_models") List<String> fallbackModels) { }
 
     @JsonInclude(NON_NULL)
     public record PromotionPolicy(PromotionStrategy strategy,
                                    @JsonProperty("require_teacher_review") boolean requireTeacherReview,
                                    @JsonProperty("min_successful_branches") Integer minSuccessfulBranches,
-                                   @JsonProperty("promotion_gate") PromotionGateSpec promotionGate) {}
+                                   @JsonProperty("promotion_gate") PromotionGateSpec promotionGate) { }
 
     @JsonInclude(NON_NULL)
     public record PromotionGateSpec(@JsonProperty("min_score_delta") int minScoreDelta,

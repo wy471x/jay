@@ -11,6 +11,7 @@ import picocli.CommandLine.Parameters;
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 /**
  * Manage thread/session metadata.
@@ -25,17 +26,18 @@ import java.util.concurrent.Callable;
         ThreadCommand.SetName.class, ThreadCommand.ClearName.class
     })
 public class ThreadCommand implements Callable<Integer> {
+    private static final Logger LOGGER = Logger.getLogger(ThreadCommand.class.getName());
 
     @Override
     public Integer call() {
-        System.out.println("Usage: jay thread <list|read|resume|fork|archive|unarchive|set-name|clear-name>");
+        LOGGER.info("Usage: jay thread <list|read|resume|fork|archive|unarchive|set-name|clear-name>");
         return 0;
     }
 
     private static StateStore stateStore() {
         var store = CliSpringContext.getBeanOrNull(StateStore.class);
         if (store == null) {
-            System.err.println("State store not available. Ensure the Spring context is initialized.");
+            LOGGER.severe("State store not available. Ensure the Spring context is initialized.");
         }
         return store;
     }
@@ -58,17 +60,17 @@ public class ThreadCommand implements Callable<Integer> {
             var filters = new ThreadListFilters(all, limit);
             List<ThreadEntity> threads = store.listThreads(filters);
             if (threads.isEmpty()) {
-                System.out.println("No threads found.");
+                LOGGER.info("No threads found.");
                 return 0;
             }
             System.out.printf("%-40s %-10s %-20s %-30s%n", "ID", "STATUS", "UPDATED", "TITLE");
-            System.out.println("-".repeat(100));
+            LOGGER.info("-".repeat(100));
             for (var t : threads) {
                 System.out.printf("%-40s %-10s %-20s %-30s%n",
                         t.id(), t.status(), t.updatedAt(), truncate(t.title(), 28));
             }
-            System.out.println("-".repeat(100));
-            System.out.println(threads.size() + " thread(s)");
+            LOGGER.info("-".repeat(100));
+            LOGGER.info(threads.size() + " thread(s)");
             return 0;
         }
     }
@@ -87,17 +89,17 @@ public class ThreadCommand implements Callable<Integer> {
 
             var thread = store.readThread(threadId);
             if (thread.isEmpty()) {
-                System.out.println("Thread not found: " + threadId);
+                LOGGER.info("Thread not found: " + threadId);
                 return 1;
             }
             var t = thread.get();
-            System.out.println("Thread: " + t.id());
-            System.out.println("  Status:     " + t.status());
-            System.out.println("  Title:      " + (t.title() != null ? t.title() : "(untitled)"));
-            System.out.println("  Created:    " + t.createdAt());
-            System.out.println("  Updated:    " + t.updatedAt());
-            System.out.println("  Archived:   " + (t.archivedAt() > 0 ? Instant.ofEpochMilli(t.archivedAt()).toString() : "no"));
-            System.out.println("  Leaf ID:    " + (t.currentLeafId() > 0 ? t.currentLeafId() : "none"));
+            LOGGER.info("Thread: " + t.id());
+            LOGGER.info("  Status:     " + t.status());
+            LOGGER.info("  Title:      " + (t.title() != null ? t.title() : "(untitled)"));
+            LOGGER.info("  Created:    " + t.createdAt());
+            LOGGER.info("  Updated:    " + t.updatedAt());
+            LOGGER.info("  Archived:   " + (t.archivedAt() > 0 ? Instant.ofEpochMilli(t.archivedAt()).toString() : "no"));
+            LOGGER.info("  Leaf ID:    " + (t.currentLeafId() > 0 ? t.currentLeafId() : "none"));
             return 0;
         }
     }
@@ -111,8 +113,8 @@ public class ThreadCommand implements Callable<Integer> {
 
         @Override
         public Integer call() {
-            System.out.println("Resume thread: " + threadId);
-            System.out.println("(use 'jay exec --resume " + threadId + " <prompt>' to continue)");
+            LOGGER.info("Resume thread: " + threadId);
+            LOGGER.info("(use 'jay exec --resume " + threadId + " <prompt>' to continue)");
             return 0;
         }
     }
@@ -126,8 +128,8 @@ public class ThreadCommand implements Callable<Integer> {
 
         @Override
         public Integer call() {
-            System.out.println("Fork thread: " + threadId);
-            System.out.println("Fork not yet implemented — use TUI or app-server.");
+            LOGGER.info("Fork thread: " + threadId);
+            LOGGER.info("Fork not yet implemented — use TUI or app-server.");
             return 0;
         }
     }
@@ -144,7 +146,7 @@ public class ThreadCommand implements Callable<Integer> {
             StateStore store = stateStore();
             if (store == null) return 1;
             store.archiveThread(threadId, Instant.now().toEpochMilli());
-            System.out.println("Archived thread: " + threadId);
+            LOGGER.info("Archived thread: " + threadId);
             return 0;
         }
     }
@@ -161,7 +163,7 @@ public class ThreadCommand implements Callable<Integer> {
             StateStore store = stateStore();
             if (store == null) return 1;
             store.unarchiveThread(threadId);
-            System.out.println("Unarchived thread: " + threadId);
+            LOGGER.info("Unarchived thread: " + threadId);
             return 0;
         }
     }
@@ -181,7 +183,7 @@ public class ThreadCommand implements Callable<Integer> {
             StateStore store = stateStore();
             if (store == null) return 1;
             store.setThreadName(threadId, name);
-            System.out.println("Thread name set: " + threadId + " → " + name);
+            LOGGER.info("Thread name set: " + threadId + " → " + name);
             return 0;
         }
     }
@@ -198,7 +200,7 @@ public class ThreadCommand implements Callable<Integer> {
             StateStore store = stateStore();
             if (store == null) return 1;
             store.clearThreadName(threadId);
-            System.out.println("Thread name cleared: " + threadId);
+            LOGGER.info("Thread name cleared: " + threadId);
             return 0;
         }
     }

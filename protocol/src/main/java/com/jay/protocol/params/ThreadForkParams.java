@@ -11,4 +11,4 @@ public record ThreadForkParams(@JsonProperty("thread_id") String threadId, Strin
         @JsonProperty("approval_policy") String approvalPolicy, String sandbox, JsonNode config,
         @JsonProperty("base_instructions") String baseInstructions,
         @JsonProperty("developer_instructions") String developerInstructions,
-        @JsonProperty(value = "persist_extended_history", defaultValue = "false") boolean persistExtendedHistory) {}
+        @JsonProperty(value = "persist_extended_history", defaultValue = "false") boolean persistExtendedHistory) { }

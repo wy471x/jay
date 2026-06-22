@@ -8,15 +8,15 @@ public sealed interface ExecApprovalRequirement {
     record Skip(
         boolean bypassSandbox,
         ExecPolicyAmendment proposedExecpolicyAmendment
-    ) implements ExecApprovalRequirement {}
+    ) implements ExecApprovalRequirement { }
 
     record NeedsApproval(
         String reason,
         ExecPolicyAmendment proposedExecpolicyAmendment,
         List<NetworkPolicyAmendment> proposedNetworkPolicyAmendments
-    ) implements ExecApprovalRequirement {}
+    ) implements ExecApprovalRequirement { }
 
-    record Forbidden(String reason) implements ExecApprovalRequirement {}
+    record Forbidden(String reason) implements ExecApprovalRequirement { }
 
     default String reason() {
         return switch (this) {

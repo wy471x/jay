@@ -5,10 +5,12 @@ import picocli.CommandLine.Option;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 /** Run local server (compatibility alias for app-server). Delegates to TUI. */
 @Command(name = "serve", description = "Run local server (compatibility alias for app-server)")
 public class ServeCommand implements Callable<Integer> {
+    private static final Logger LOGGER = Logger.getLogger(ServeCommand.class.getName());
 
     @Option(names = {"--http"}, description = "HTTP/SSE API server")
     boolean http;
@@ -45,11 +47,11 @@ public class ServeCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        System.out.println("Serve: use 'jay app-server' for the canonical runtime API");
-        System.out.println("  jay app-server --http    HTTP/SSE runtime API on 127.0.0.1:7878");
-        System.out.println("  jay app-server --mobile  Runtime API + phone page (binds 0.0.0.0)");
-        System.out.println("  jay app-server --stdio   JSON-RPC over stdio");
-        System.out.println("  jay mcp-server           MCP stdio mode");
+        LOGGER.info("Serve: use 'jay app-server' for the canonical runtime API");
+        LOGGER.info("  jay app-server --http    HTTP/SSE runtime API on 127.0.0.1:7878");
+        LOGGER.info("  jay app-server --mobile  Runtime API + phone page (binds 0.0.0.0)");
+        LOGGER.info("  jay app-server --stdio   JSON-RPC over stdio");
+        LOGGER.info("  jay mcp-server           MCP stdio mode");
         return 0;
     }
 }

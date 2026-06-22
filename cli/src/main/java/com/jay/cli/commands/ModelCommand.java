@@ -8,10 +8,12 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 /** Resolve or list available models across providers. */
 @Command(name = "model", description = "Resolve or list available models across providers")
 public class ModelCommand implements Callable<Integer> {
+    private static final Logger LOGGER = Logger.getLogger(ModelCommand.class.getName());
 
     @Option(names = {"list"}, description = "List all registered models")
     boolean list;
@@ -31,11 +33,11 @@ public class ModelCommand implements Callable<Integer> {
                     ? registry.list().stream().filter(m -> m.provider() == provider).toList()
                     : registry.list();
             if (models.isEmpty()) {
-                System.out.println("No models found" + (provider != null ? " for " + provider.id() : "") + ".");
+                LOGGER.info("No models found" + (provider != null ? " for " + provider.id() : "") + ".");
                 return 0;
             }
             System.out.printf("%-50s %-15s %s%n", "MODEL ID", "PROVIDER", "CAPABILITIES");
-            System.out.println("-".repeat(85));
+            LOGGER.info("-".repeat(85));
             for (var m : models) {
                 var caps = new StringBuilder();
                 if (m.supportsTools()) caps.append("tools ");
@@ -43,16 +45,16 @@ public class ModelCommand implements Callable<Integer> {
                 System.out.printf("%-50s %-15s %s%n", m.id(), m.provider().id(),
                         caps.toString().trim());
             }
-            System.out.println("-".repeat(85));
-            System.out.println(models.size() + " model(s)");
+            LOGGER.info("-".repeat(85));
+            LOGGER.info(models.size() + " model(s)");
         } else {
             var resolved = registry.resolve(model, provider);
-            System.out.println("Model Resolution");
-            System.out.println("  Requested:  " + resolved.requested());
-            System.out.println("  Resolved:   " + resolved.resolved().id()
+            LOGGER.info("Model Resolution");
+            LOGGER.info("  Requested:  " + resolved.requested());
+            LOGGER.info("  Resolved:   " + resolved.resolved().id()
                     + " (" + resolved.resolved().provider().id() + ")");
-            System.out.println("  Fallback:   " + resolved.usedFallback());
-            System.out.println("  Chain:      " + String.join(" → ", resolved.fallbackChain()));
+            LOGGER.info("  Fallback:   " + resolved.usedFallback());
+            LOGGER.info("  Chain:      " + String.join(" → ", resolved.fallbackChain()));
         }
         return 0;
     }

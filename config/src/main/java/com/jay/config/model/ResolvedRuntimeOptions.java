@@ -25,4 +25,4 @@ public record ResolvedRuntimeOptions(
     Boolean yolo,
     String verbosity,
     Map<String, String> httpHeaders
-) {}
+) { }

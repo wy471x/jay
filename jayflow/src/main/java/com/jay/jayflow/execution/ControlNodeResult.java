@@ -13,4 +13,4 @@ public record ControlNodeResult(
         ControlNodeKind kind,
         WorkflowRunStatus status,
         @JsonInclude(NON_EMPTY) @JsonProperty("selected_children") List<String> selectedChildren,
-        String summary) {}
+        String summary) { }

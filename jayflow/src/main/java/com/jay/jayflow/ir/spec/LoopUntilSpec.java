@@ -10,4 +10,4 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonInclude(NON_NULL)
 public record LoopUntilSpec(String id, String condition,
         @JsonProperty("max_iterations") Integer maxIterations,
-        List<WorkflowNode> children) {}
+        List<WorkflowNode> children) { }

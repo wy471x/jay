@@ -2,7 +2,9 @@ package com.jay.config.resolver;
 
 import com.jay.agent.ProviderKind;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Short model-name alias → provider-specific fully-qualified model ID.
@@ -76,7 +78,7 @@ public final class ModelNormalizer {
         ALIAS_MAP = Collections.unmodifiableMap(map);
     }
 
-    private ModelNormalizer() {}
+    private ModelNormalizer() { }
 
     public static String normalize(String alias, ProviderKind provider) {
         if (alias == null || alias.isBlank()) return alias;

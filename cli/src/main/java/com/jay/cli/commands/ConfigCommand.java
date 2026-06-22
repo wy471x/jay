@@ -6,6 +6,7 @@ import picocli.CommandLine.Parameters;
 
 import java.io.IOException;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 /**
  * Read/write/list config values.
@@ -19,10 +20,11 @@ import java.util.concurrent.Callable;
         ConfigCommand.Path.class
     })
 public class ConfigCommand implements Callable<Integer> {
+    private static final Logger LOGGER = Logger.getLogger(ConfigCommand.class.getName());
 
     @Override
     public Integer call() {
-        System.out.println("Usage: jay config <get|set|unset|list|path>");
+        LOGGER.info("Usage: jay config <get|set|unset|list|path>");
         return 0;
     }
 
@@ -49,13 +51,13 @@ public class ConfigCommand implements Callable<Integer> {
                 ConfigStore store = loadStore();
                 String value = store.getValue(key);
                 if (value != null) {
-                    System.out.println(key + " = " + value);
+                    LOGGER.info(key + " = " + value);
                 } else {
-                    System.out.println(key + " = <not set>");
+                    LOGGER.info(key + " = <not set>");
                 }
                 return 0;
             } catch (IOException e) {
-                System.err.println("Error reading config: " + e.getMessage());
+                LOGGER.severe("Error reading config: " + e.getMessage());
                 return 1;
             }
         }
@@ -77,10 +79,10 @@ public class ConfigCommand implements Callable<Integer> {
                 ConfigStore store = loadStore();
                 store.setValue(key, value);
                 store.save();
-                System.out.println(key + " = " + value);
+                LOGGER.info(key + " = " + value);
                 return 0;
             } catch (IOException e) {
-                System.err.println("Error writing config: " + e.getMessage());
+                LOGGER.severe("Error writing config: " + e.getMessage());
                 return 1;
             }
         }
@@ -99,10 +101,10 @@ public class ConfigCommand implements Callable<Integer> {
                 ConfigStore store = loadStore();
                 store.unsetValue(key);
                 store.save();
-                System.out.println("Unset " + key);
+                LOGGER.info("Unset " + key);
                 return 0;
             } catch (IOException e) {
-                System.err.println("Error writing config: " + e.getMessage());
+                LOGGER.severe("Error writing config: " + e.getMessage());
                 return 1;
             }
         }
@@ -118,15 +120,15 @@ public class ConfigCommand implements Callable<Integer> {
                 ConfigStore store = loadStore();
                 var values = store.listValues();
                 if (values.isEmpty()) {
-                    System.out.println("No config values set.");
+                    LOGGER.info("No config values set.");
                 } else {
                     for (var entry : values.entrySet()) {
-                        System.out.println(entry.getKey() + " = " + entry.getValue());
+                        LOGGER.info(entry.getKey() + " = " + entry.getValue());
                     }
                 }
                 return 0;
             } catch (IOException e) {
-                System.err.println("Error reading config: " + e.getMessage());
+                LOGGER.severe("Error reading config: " + e.getMessage());
                 return 1;
             }
         }
@@ -140,10 +142,10 @@ public class ConfigCommand implements Callable<Integer> {
         public Integer call() {
             try {
                 ConfigStore store = loadStore();
-                System.out.println(store.path());
+                LOGGER.info(store.path().toString());
                 return 0;
             } catch (IOException e) {
-                System.err.println("Error resolving config path: " + e.getMessage());
+                LOGGER.severe("Error resolving config path: " + e.getMessage());
                 return 1;
             }
         }

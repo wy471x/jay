@@ -11,8 +11,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value = McpStartupStatus.Cancelled.class, name = "cancelled")
 })
 public sealed interface McpStartupStatus {
-    record Starting() implements McpStartupStatus {}
-    record Ready() implements McpStartupStatus {}
-    record Failed(String error) implements McpStartupStatus {}
-    record Cancelled() implements McpStartupStatus {}
+    record Starting() implements McpStartupStatus { }
+
+    record Ready() implements McpStartupStatus { }
+
+    record Failed(String error) implements McpStartupStatus { }
+
+    record Cancelled() implements McpStartupStatus { }
 }

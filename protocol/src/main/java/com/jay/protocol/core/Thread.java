@@ -12,4 +12,4 @@ public record Thread(
         @JsonProperty("updated_at") long updatedAt,
         ThreadStatus status, String path, String cwd,
         @JsonProperty("cli_version") String cliVersion,
-        SessionSource source, String name) {}
+        SessionSource source, String name) { }

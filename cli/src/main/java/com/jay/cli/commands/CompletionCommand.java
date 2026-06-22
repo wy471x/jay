@@ -8,10 +8,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 /** Shell completion generation. */
 @Command(name = "completion", description = "Generate shell completions")
 public class CompletionCommand implements Callable<Integer> {
+    private static final Logger LOGGER = Logger.getLogger(CompletionCommand.class.getName());
 
     @Parameters(index = "0", paramLabel = "SHELL",
             description = "Target shell: bash, zsh, fish")
@@ -30,7 +32,7 @@ public class CompletionCommand implements Callable<Integer> {
                     if (output != null) {
                         File parentCmd = new File(output.getParentFile(), name);
                         picocli.AutoComplete.bash(name, output.getParentFile(), parentCmd, cmd);
-                        System.out.println("Bash completion written to " + output);
+                        LOGGER.info("Bash completion written to " + output);
                     } else {
                         String script = picocli.AutoComplete.bash(name, cmd);
                         System.out.print(script);
@@ -44,22 +46,22 @@ public class CompletionCommand implements Callable<Integer> {
                         Files.writeString(output.toPath(), "# " + shell + " completion for jay\n");
                         Files.writeString(output.toPath(), bashScript,
                                 java.nio.file.StandardOpenOption.APPEND);
-                        System.out.println(shell + " completion written to " + output);
-                        System.out.println("Note: For native " + shell + " completions, use the bash script as a base.");
+                        LOGGER.info(shell + " completion written to " + output);
+                        LOGGER.info("Note: For native " + shell + " completions, use the bash script as a base.");
                     } else {
-                        System.out.println("# " + shell + " completion for jay (bash-based)");
-                        System.out.println(bashScript);
+                        LOGGER.info("# " + shell + " completion for jay (bash-based)");
+                        LOGGER.info(bashScript);
                     }
                 }
                 default -> {
-                    System.err.println("Unknown shell: " + shell);
-                    System.err.println("Supported shells: bash, zsh, fish");
+                    LOGGER.severe("Unknown shell: " + shell);
+                    LOGGER.severe("Supported shells: bash, zsh, fish");
                     return 1;
                 }
             }
             return 0;
         } catch (IOException e) {
-            System.err.println("Error generating completion: " + e.getMessage());
+            LOGGER.severe("Error generating completion: " + e.getMessage());
             return 1;
         }
     }

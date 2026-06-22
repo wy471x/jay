@@ -16,11 +16,11 @@ import java.time.Duration;
  */
 final class ReleaseFetcher {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final String USER_AGENT = "codewhale-updater";
     private static final Duration TIMEOUT = Duration.ofSeconds(5);
 
-    private ReleaseFetcher() {}
+    private ReleaseFetcher() { }
 
     /** Fetch a JSON string from a URL with a 5-second timeout. */
     static String fetchJson(String url, String description) throws IOException {
@@ -48,7 +48,7 @@ final class ReleaseFetcher {
 
     /** Extract tag_name from a single-release JSON response. */
     static String parseLatestTag(String body) throws IOException {
-        JsonNode root = mapper.readTree(body);
+        JsonNode root = MAPPER.readTree(body);
         JsonNode tag = root.get("tag_name");
         if (tag == null || tag.isNull()) {
             throw new IOException("missing tag_name in release JSON");
@@ -58,7 +58,7 @@ final class ReleaseFetcher {
 
     /** Extract the first beta tag_name from a release-list JSON response. */
     static String parseLatestBetaTag(String body) throws IOException {
-        JsonNode array = mapper.readTree(body);
+        JsonNode array = MAPPER.readTree(body);
         if (!array.isArray()) {
             throw new IOException("expected JSON array for release list");
         }

@@ -15,4 +15,4 @@ public record ToolSpec(
         JsonNode outputSchema,
         boolean supportsParallelToolCalls,
         Long timeoutMs
-) {}
+) { }

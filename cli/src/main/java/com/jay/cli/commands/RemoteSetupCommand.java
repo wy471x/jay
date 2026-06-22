@@ -5,10 +5,12 @@ import picocli.CommandLine.Option;
 
 import java.io.File;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 /** Generate a remote deploy bundle. */
 @Command(name = "remote-setup", description = "Generate a remote deploy bundle")
 public class RemoteSetupCommand implements Callable<Integer> {
+    private static final Logger LOGGER = Logger.getLogger(RemoteSetupCommand.class.getName());
 
     @Option(names = {"--cloud"}, description = "Cloud target (lighthouse, azure, digitalocean)")
     String cloud;
@@ -27,20 +29,20 @@ public class RemoteSetupCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        System.out.println("Remote Setup");
-        System.out.println("  Cloud:    " + (cloud != null ? cloud : "default"));
-        System.out.println("  Bridge:   " + (bridge != null ? bridge : "none"));
-        System.out.println("  Provider: " + (provider != null ? provider : "default"));
-        System.out.println("  Output:   " + (out != null ? out : "current directory"));
+        LOGGER.info("Remote Setup");
+        LOGGER.info("  Cloud:    " + (cloud != null ? cloud : "default"));
+        LOGGER.info("  Bridge:   " + (bridge != null ? bridge : "none"));
+        LOGGER.info("  Provider: " + (provider != null ? provider : "default"));
+        LOGGER.info("  Output:   " + (out != null ? out : "current directory"));
 
         if (!yes) {
-            System.out.println();
-            System.out.println("This will generate a deployment bundle. Continue? (use --yes to skip)");
+            LOGGER.info("");
+            LOGGER.info("This will generate a deployment bundle. Continue? (use --yes to skip)");
         }
 
         // Generate deployment bundle
-        System.out.println("Remote deployment bundle generation not yet fully implemented.");
-        System.out.println("Use the CodeWhale deploy guide: https://cnb.cool/codewhale.net/codewhale");
+        LOGGER.info("Remote deployment bundle generation not yet fully implemented.");
+        LOGGER.info("Use the CodeWhale deploy guide: https://cnb.cool/codewhale.net/codewhale");
         return 0;
     }
 }

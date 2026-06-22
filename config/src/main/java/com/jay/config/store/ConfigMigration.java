@@ -14,7 +14,7 @@ public final class ConfigMigration {
     private static final String PRIMARY_DIR = ".codewhale";
     private static final String LEGACY_DIR = ".deepseek";
 
-    private ConfigMigration() {}
+    private ConfigMigration() { }
 
     public record MigrationInfo(Path legacyPath, Path primaryPath) {
         public String userNotice() {

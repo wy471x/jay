@@ -3,7 +3,14 @@ package com.jay.jayflow.ir;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.jay.jayflow.ir.spec.*;
+import com.jay.jayflow.ir.spec.BranchSpec;
+import com.jay.jayflow.ir.spec.CondSpec;
+import com.jay.jayflow.ir.spec.ExpandSpec;
+import com.jay.jayflow.ir.spec.LeafSpec;
+import com.jay.jayflow.ir.spec.LoopUntilSpec;
+import com.jay.jayflow.ir.spec.ReduceSpec;
+import com.jay.jayflow.ir.spec.SequenceSpec;
+import com.jay.jayflow.ir.spec.TeacherReviewSpec;
 import java.util.List;
 
 /** 8-variant workflow node sealed interface wrapping separate Spec records.

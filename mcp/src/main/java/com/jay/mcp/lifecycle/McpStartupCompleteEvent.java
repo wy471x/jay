@@ -6,4 +6,4 @@ public record McpStartupCompleteEvent(
     List<String> ready,
     List<McpStartupFailure> failed,
     List<String> cancelled
-) {}
+) { }

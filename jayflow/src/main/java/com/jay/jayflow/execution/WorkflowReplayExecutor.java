@@ -7,7 +7,9 @@ import com.jay.jayflow.ir.WorkflowNode;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 /** Deterministic replay executor. Equivalent to Rust's WorkflowReplayExecutor. */
 public class WorkflowReplayExecutor {
@@ -50,5 +52,5 @@ public class WorkflowReplayExecutor {
     }
 }
 
-record ReplayLeafKey(String traceId, String leafId, String inputHash) {}
-record ReplayControlKey(String traceId, String nodeId) {}
+record ReplayLeafKey(String traceId, String leafId, String inputHash) { }
+record ReplayControlKey(String traceId, String nodeId) { }

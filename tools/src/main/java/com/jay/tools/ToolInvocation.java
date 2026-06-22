@@ -10,4 +10,4 @@ public record ToolInvocation(
         String toolName,
         ToolPayload payload,
         ToolCallSource source
-) {}
+) { }

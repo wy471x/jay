@@ -43,7 +43,7 @@ public final class ReleaseChecker {
         "https://cnb.cool/Hmbown/CodeWhale/-/releases";
     private static final Duration RELEASE_METADATA_TIMEOUT = Duration.ofSeconds(5);
 
-    private ReleaseChecker() {}
+    private ReleaseChecker() { }
 
     // ── Query resolution ───────────────────────────────────────────
 

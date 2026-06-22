@@ -17,4 +17,4 @@ public record TeacherCandidate(
         @JsonProperty("source_branch_id") String sourceBranchId,
         String summary,
         @JsonInclude(NON_EMPTY) List<String> evidence,
-        @JsonProperty("replay_results") @JsonInclude(NON_EMPTY) List<StudentReplayResult> replayResults) {}
+        @JsonProperty("replay_results") @JsonInclude(NON_EMPTY) List<StudentReplayResult> replayResults) { }

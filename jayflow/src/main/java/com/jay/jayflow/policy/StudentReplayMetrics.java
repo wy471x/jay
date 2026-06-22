@@ -7,4 +7,4 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record StudentReplayMetrics(
         @JsonProperty("score") int score,
-        @JsonProperty("cost_microusd") long costMicrousd) {}
+        @JsonProperty("cost_microusd") long costMicrousd) { }

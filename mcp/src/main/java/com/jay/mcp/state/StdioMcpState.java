@@ -22,8 +22,12 @@ public class StdioMcpState {
     }
 
     public McpManager manager() { return manager; }
+
     public Map<String, McpServerDefinition> definitions() { return definitions; }
+
     public Map<String, Boolean> running() { return running; }
+
     public String lifecycleState() { return lifecycleState; }
+
     public void setLifecycleState(String state) { this.lifecycleState = state; }
 }

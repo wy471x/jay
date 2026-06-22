@@ -11,14 +11,14 @@ import com.jay.jayflow.ir.WorkflowNode;
 public record WorkflowReplayTrace(
         @JsonProperty("trace_id") String traceId,
         @JsonProperty("leaf_records") List<ReplayLeafRecord> leafRecords,
-        @JsonProperty("control_records") List<ReplayControlRecord> controlRecords) {}
+        @JsonProperty("control_records") List<ReplayControlRecord> controlRecords) { }
 
 /** Leaf replay record. Equivalent to Rust's ReplayLeafRecord. */
 record ReplayLeafRecord(
         @JsonProperty("trace_id") String traceId,
         @JsonProperty("leaf_id") String leafId,
         @JsonProperty("input_hash") String inputHash,
-        LeafResult result) {}
+        LeafResult result) { }
 
 /** Control node replay record. Equivalent to Rust's ReplayControlRecord. */
 record ReplayControlRecord(
@@ -26,4 +26,4 @@ record ReplayControlRecord(
         @JsonProperty("node_id") String nodeId,
         ControlNodeKind kind,
         ControlNodeResult result,
-        @JsonProperty("generated_nodes") List<WorkflowNode> generatedNodes) {}
+        @JsonProperty("generated_nodes") List<WorkflowNode> generatedNodes) { }

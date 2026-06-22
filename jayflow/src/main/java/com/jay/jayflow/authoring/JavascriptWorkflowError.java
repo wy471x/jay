@@ -6,9 +6,9 @@ public sealed interface JavascriptWorkflowError
                JavascriptWorkflowError.InvalidWorkflowObject, JavascriptWorkflowError.InvalidJson,
                JavascriptWorkflowError.InvalidNode {
 
-    record UnsupportedConstruct(String construct) implements JavascriptWorkflowError {}
-    record MissingWorkflowCall() implements JavascriptWorkflowError {}
-    record InvalidWorkflowObject(String reason) implements JavascriptWorkflowError {}
-    record InvalidJson(String reason) implements JavascriptWorkflowError {}
-    record InvalidNode(String reason) implements JavascriptWorkflowError {}
+    record UnsupportedConstruct(String construct) implements JavascriptWorkflowError { }
+    record MissingWorkflowCall() implements JavascriptWorkflowError { }
+    record InvalidWorkflowObject(String reason) implements JavascriptWorkflowError { }
+    record InvalidJson(String reason) implements JavascriptWorkflowError { }
+    record InvalidNode(String reason) implements JavascriptWorkflowError { }
 }

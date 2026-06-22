@@ -182,13 +182,13 @@ public class ModelRegistry {
 
     // ---- default registry ----
 
-    private static ModelRegistry defaultInstance;
+    private static ModelRegistry DEFAULT_INSTANCE;
 
     public static ModelRegistry defaultRegistry() {
-        if (defaultInstance == null) {
-            defaultInstance = new ModelRegistry(builtinModels());
+        if (DEFAULT_INSTANCE == null) {
+            DEFAULT_INSTANCE = new ModelRegistry(builtinModels());
         }
-        return defaultInstance;
+        return DEFAULT_INSTANCE;
     }
 
     private static ModelInfo m(String id, ProviderKind provider, List<String> aliases,

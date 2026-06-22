@@ -1,7 +1,9 @@
 package com.jay.jayflow.authoring.js;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.jay.jayflow.ir.*;
+import com.jay.jayflow.ir.PromotionStrategy;
+import com.jay.jayflow.ir.WorkflowConfig;
+import com.jay.jayflow.ir.WorkflowSpec;
 import com.jay.jayflow.ir.spec.*;
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class JsWorkflowSpec {
     @JsonProperty("promotion_policy") public WorkflowConfig.PromotionPolicy promotionPolicy = new WorkflowConfig.PromotionPolicy(PromotionStrategy.ALL, false, null, new WorkflowConfig.PromotionGateSpec());
     @JsonProperty("nodes") public List<JsWorkflowNode> nodes = List.of();
 
-    public JsWorkflowSpec() {}
+    public JsWorkflowSpec() { }
 
     public WorkflowSpec toWorkflow() {
         return new WorkflowSpec(id, goal, description, budget, permissions, modelPolicy, promotionPolicy,

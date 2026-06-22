@@ -9,12 +9,17 @@ public sealed interface FunctionCallError
                FunctionCallError.MutatingToolRejected, FunctionCallError.TimedOut,
                FunctionCallError.Cancelled, FunctionCallError.ExecutionFailed {
 
-    record ToolNotFound(String name) implements FunctionCallError {}
-    record KindMismatch(String expected, String got) implements FunctionCallError {}
-    record MutatingToolRejected(String name) implements FunctionCallError {}
-    record TimedOut(String name, long timeoutMs) implements FunctionCallError {}
-    record Cancelled(String name) implements FunctionCallError {}
-    record ExecutionFailed(String name, String error) implements FunctionCallError {}
+    record ToolNotFound(String name) implements FunctionCallError { }
+
+    record KindMismatch(String expected, String got) implements FunctionCallError { }
+
+    record MutatingToolRejected(String name) implements FunctionCallError { }
+
+    record TimedOut(String name, long timeoutMs) implements FunctionCallError { }
+
+    record Cancelled(String name) implements FunctionCallError { }
+
+    record ExecutionFailed(String name, String error) implements FunctionCallError { }
 
     default void throwUnchecked() {
         throw new FceException(this);
@@ -22,7 +27,12 @@ public sealed interface FunctionCallError
 
     final class FceException extends RuntimeException {
         private final FunctionCallError error;
-        FceException(FunctionCallError error) { super(error.toString()); this.error = error; }
+
+        FceException(FunctionCallError error) {
+            super(error.toString());
+            this.error = error;
+        }
+
         public FunctionCallError error() { return error; }
     }
 }

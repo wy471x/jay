@@ -9,4 +9,4 @@ public record JobHistoryEntry(
     @JsonProperty("progress") Integer progress,
     @JsonProperty("detail") String detail,
     @JsonProperty("retry") JobRetryMetadata retry
-) {}
+) { }

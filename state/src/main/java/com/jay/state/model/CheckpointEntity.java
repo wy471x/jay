@@ -11,4 +11,4 @@ public record CheckpointEntity(
         String checkpointId,
         String stateJson,
         long createdAt
-) {}
+) { }

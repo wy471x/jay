@@ -1,7 +1,37 @@
 package com.jay.cli;
 
 import com.jay.agent.ProviderKind;
-import com.jay.cli.commands.*;
+import com.jay.cli.commands.AppServerCommand;
+import com.jay.cli.commands.ApplyCommand;
+import com.jay.cli.commands.AuthCommand;
+import com.jay.cli.commands.CompletionCommand;
+import com.jay.cli.commands.ConfigCommand;
+import com.jay.cli.commands.DoctorCommand;
+import com.jay.cli.commands.EvalCommand;
+import com.jay.cli.commands.ExecCommand;
+import com.jay.cli.commands.FeaturesCommand;
+import com.jay.cli.commands.FleetCommand;
+import com.jay.cli.commands.ForkCommand;
+import com.jay.cli.commands.InitCommand;
+import com.jay.cli.commands.LoginCommand;
+import com.jay.cli.commands.LogoutCommand;
+import com.jay.cli.commands.McpCommand;
+import com.jay.cli.commands.McpServerCommand;
+import com.jay.cli.commands.MetricsCommand;
+import com.jay.cli.commands.ModelCommand;
+import com.jay.cli.commands.ModelsCommand;
+import com.jay.cli.commands.RemoteSetupCommand;
+import com.jay.cli.commands.ResumeCommand;
+import com.jay.cli.commands.ReviewCommand;
+import com.jay.cli.commands.RunCommand;
+import com.jay.cli.commands.SandboxCommand;
+import com.jay.cli.commands.ServeCommand;
+import com.jay.cli.commands.SessionsCommand;
+import com.jay.cli.commands.SetupCommand;
+import com.jay.cli.commands.SpeechCommand;
+import com.jay.cli.commands.SwebenchCommand;
+import com.jay.cli.commands.ThreadCommand;
+import com.jay.cli.commands.UpdateCommand;
 import com.jay.cli.converter.ProviderKindConverter;
 import com.jay.config.model.CliRuntimeOverrides;
 import com.jay.core.RuntimeConfiguration;
@@ -17,6 +47,7 @@ import picocli.CommandLine.Model.CommandSpec;
 
 import java.io.File;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * CLI entry point using picocli — replaces Rust's clap-based CLI.
@@ -62,14 +93,15 @@ import java.util.List;
     }
 )
 public class JayCli implements Runnable {
+    private static final Logger LOGGER = Logger.getLogger(JayCli.class.getName());
 
     @Spec CommandSpec spec;
 
     // Static holder so subcommands can access parsed global flags
-    private static volatile JayCli instance;
+    private static volatile JayCli INSTANCE;
 
     public JayCli() {
-        instance = this; // picocli populates fields after construction, before subcommand execution
+        INSTANCE = this; // picocli populates fields after construction, before subcommand execution
     }
 
     // ── Global flags ─────────────────────────────────────────────────
@@ -138,50 +170,50 @@ public class JayCli implements Runnable {
 
     /** Build CliRuntimeOverrides from the most recently parsed global flags. */
     public static CliRuntimeOverrides buildOverrides() {
-        if (instance == null) return new CliRuntimeOverrides();
+        if (INSTANCE == null) return new CliRuntimeOverrides();
         var o = new CliRuntimeOverrides();
-        if (instance.provider != null) o.provider(instance.provider);
-        if (instance.model != null) o.model(instance.model);
-        if (instance.apiKey != null) o.apiKey(instance.apiKey);
-        if (instance.baseUrl != null) o.baseUrl(instance.baseUrl);
-        if (instance.outputMode != null) o.outputMode(instance.outputMode);
-        if (instance.logLevel != null) o.logLevel(instance.logLevel);
-        if (instance.telemetry != null) o.telemetry(instance.telemetry);
-        if (instance.approvalPolicy != null) o.approvalPolicy(instance.approvalPolicy);
-        if (instance.sandboxMode != null) o.sandboxMode(instance.sandboxMode);
-        if (instance.verbosity != null) o.verbosity(instance.verbosity);
-        o.yolo(instance.yolo);
+        if (INSTANCE.provider != null) o.provider(INSTANCE.provider);
+        if (INSTANCE.model != null) o.model(INSTANCE.model);
+        if (INSTANCE.apiKey != null) o.apiKey(INSTANCE.apiKey);
+        if (INSTANCE.baseUrl != null) o.baseUrl(INSTANCE.baseUrl);
+        if (INSTANCE.outputMode != null) o.outputMode(INSTANCE.outputMode);
+        if (INSTANCE.logLevel != null) o.logLevel(INSTANCE.logLevel);
+        if (INSTANCE.telemetry != null) o.telemetry(INSTANCE.telemetry);
+        if (INSTANCE.approvalPolicy != null) o.approvalPolicy(INSTANCE.approvalPolicy);
+        if (INSTANCE.sandboxMode != null) o.sandboxMode(INSTANCE.sandboxMode);
+        if (INSTANCE.verbosity != null) o.verbosity(INSTANCE.verbosity);
+        o.yolo(INSTANCE.yolo);
         return o;
     }
 
     /** Convenience: get the workspace from parsed flags. */
     public static File workspaceFromFlags() {
-        if (instance == null) return null;
-        return instance.workspace;
+        if (INSTANCE == null) return null;
+        return INSTANCE.workspace;
     }
 
     // ── Default behavior ──────────────────────────────────────────────
 
     @Override
     public void run() {
-        boolean hasPrompt = (prompt != null && !prompt.isEmpty()) || promptFlag != null;
+        boolean hasPrompt = prompt != null && !prompt.isEmpty() || promptFlag != null;
 
         if (!hasPrompt && !continueSession) {
             spec.commandLine().usage(System.out);
             return;
         }
 
-        System.out.println("Starting interactive session...");
+        LOGGER.info("Starting interactive session...");
         if (continueSession) {
-            System.out.println("(continuing most recent session)");
+            LOGGER.info("(continuing most recent session)");
         }
         var promptText = prompt != null && !prompt.isEmpty()
                 ? String.join(" ", prompt)
                 : promptFlag;
         if (promptText != null && !promptText.isBlank()) {
-            System.out.println("Prompt: " + promptText);
+            LOGGER.info("Prompt: " + promptText);
         }
-        System.out.println("(Use 'jay exec <prompt>' for non-interactive or 'jay app-server --http' for API)");
+        LOGGER.info("(Use 'jay exec <prompt>' for non-interactive or 'jay app-server --http' for API)");
     }
 
     // ── Main entry point ──────────────────────────────────────────────
@@ -193,7 +225,7 @@ public class JayCli implements Runnable {
         int exitCode = new picocli.CommandLine(new JayCli())
                 .setExecutionStrategy(new picocli.CommandLine.RunLast())
                 .setExitCodeExceptionMapper(e -> {
-                    System.err.println("Error: " + e.getMessage());
+                    LOGGER.severe("Error: " + e.getMessage());
                     return 1;
                 })
                 .execute(args);
