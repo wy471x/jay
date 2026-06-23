@@ -2,6 +2,7 @@ package com.jay.tui.views;
 
 import dev.tamboui.terminal.Frame;
 import dev.tamboui.layout.Rect;
+import dev.tamboui.tui.event.KeyCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,7 @@ public class ViewStack {
     }
 
     /** Handle a key event — dispatched to the topmost modal only. */
-    public ViewAction handleKey(char character, int keyCode, boolean ctrl, boolean alt) {
+    public ViewAction handleKey(char character, KeyCode keyCode, boolean ctrl, boolean alt) {
         var top = top();
         if (top == null) return new ViewAction.None();
         return top.handleKey(character, keyCode, ctrl, alt);

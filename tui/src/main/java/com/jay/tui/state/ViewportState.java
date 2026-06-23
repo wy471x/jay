@@ -44,6 +44,10 @@ public class ViewportState {
         }
     }
 
+    public void setContentHeight(int h) { this.contentHeight = h; }
+    public void setViewportHeight(int h) { this.viewportHeight = h; }
+    public void scrollTo(int offset) { this.scrollOffset = offset; }
+
     public int scrollOffset()   { return scrollOffset; }
     public int contentHeight()  { return contentHeight; }
     public int viewportHeight() { return viewportHeight; }

@@ -2,6 +2,7 @@ package com.jay.tui.input;
 
 import com.jay.tui.core.TuiAction;
 import com.jay.tui.state.ComposerState;
+import dev.tamboui.tui.event.KeyCode;
 
 import java.util.Optional;
 
@@ -20,7 +21,7 @@ public class InputHandler {
     }
 
     /** Process an input event. Returns an optional TuiAction. */
-    public Optional<TuiAction> handleInput(int keyCode, char character, boolean ctrl, boolean alt) {
+    public Optional<TuiAction> handleInput(KeyCode keyCode, char character, boolean ctrl, boolean alt) {
         // Try dispatch
         var action = keyDispatcher.dispatch(keyCode, character, ctrl, alt);
         if (action.isPresent()) {
@@ -33,7 +34,7 @@ public class InputHandler {
         }
 
         // Backspace
-        if (keyCode == 127 || keyCode == '\b') {
+        if (keyCode == KeyCode.BACKSPACE) {
             composer.deleteBefore();
             return Optional.empty();
         }

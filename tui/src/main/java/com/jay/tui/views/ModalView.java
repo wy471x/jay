@@ -15,7 +15,7 @@ public interface ModalView {
     String kind();
 
     /** Handle a keyboard character + modifiers. Return the resulting action. */
-    ViewAction handleKey(char character, int keyCode, boolean ctrl, boolean alt);
+    ViewAction handleKey(char character, dev.tamboui.tui.event.KeyCode keyCode, boolean ctrl, boolean alt);
 
     /** Render this modal into the given frame area. */
     void render(Frame frame, Rect area);

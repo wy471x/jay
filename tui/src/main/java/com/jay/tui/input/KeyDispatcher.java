@@ -1,17 +1,17 @@
 package com.jay.tui.input;
 
 import com.jay.tui.core.TuiAction;
+import dev.tamboui.tui.event.KeyCode;
 
 import java.util.Optional;
 
 /**
  * Keyboard dispatcher. Maps key characters and escape sequences to TuiActions.
- * Uses simple char/int-based key representation (terminal-agnostic).
  */
 public class KeyDispatcher {
 
-    /** Dispatch a character key to a TuiAction. Returns empty for regular text. */
-    public Optional<TuiAction> dispatch(int keyCode, char character, boolean ctrl, boolean alt) {
+    /** Dispatch a key event to a TuiAction. Returns empty for regular text. */
+    public Optional<TuiAction> dispatch(KeyCode keyCode, char character, boolean ctrl, boolean alt) {
         // Ctrl+C / Ctrl+D → Quit
         if (ctrl && (character == 'c' || character == 'C'
                 || character == 'd' || character == 'D')) {
@@ -22,31 +22,31 @@ public class KeyDispatcher {
             return Optional.of(new TuiAction.ScrollToBottom());
         }
         // Escape → Cancel
-        if (keyCode == 27) {
+        if (keyCode == KeyCode.ESCAPE) {
             return Optional.of(new TuiAction.CancelResponse());
         }
         // Enter → Send
-        if (keyCode == '\r' || keyCode == '\n') {
+        if (keyCode == KeyCode.ENTER) {
             return Optional.of(new TuiAction.SendMessage(""));
         }
         // Up arrow
-        if (keyCode == 65517 || keyCode == 65) { // CSI A
+        if (keyCode == KeyCode.UP) {
             return Optional.of(new TuiAction.ScrollUp(1));
         }
         // Down arrow
-        if (keyCode == 65518 || keyCode == 66) { // CSI B
+        if (keyCode == KeyCode.DOWN) {
             return Optional.of(new TuiAction.ScrollDown(1));
         }
         // PageUp
-        if (keyCode == 65519) {
+        if (keyCode == KeyCode.PAGE_UP) {
             return Optional.of(new TuiAction.ScrollUp(10));
         }
         // PageDown
-        if (keyCode == 65520) {
+        if (keyCode == KeyCode.PAGE_DOWN) {
             return Optional.of(new TuiAction.ScrollDown(10));
         }
         // Tab → toggle sidebar
-        if (keyCode == '\t') {
+        if (keyCode == KeyCode.TAB) {
             return Optional.of(new TuiAction.ToggleSidebar());
         }
         return Optional.empty();

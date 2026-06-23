@@ -2,6 +2,7 @@ package com.jay.tui.views;
 
 import com.jay.tui.commands.CommandRegistry;
 import dev.tamboui.layout.Rect;
+import dev.tamboui.tui.event.KeyCode;
 import dev.tamboui.style.Color;
 import dev.tamboui.style.Style;
 import dev.tamboui.terminal.Frame;
@@ -67,18 +68,18 @@ public class HelpOverlay implements ModalView {
     public String kind() { return "help"; }
 
     @Override
-    public ViewAction handleKey(char character, int keyCode, boolean ctrl, boolean alt) {
-        if (keyCode == 27 || character == '\r' || character == '\n') { // Esc or Enter
+    public ViewAction handleKey(char character, KeyCode keyCode, boolean ctrl, boolean alt) {
+        if (keyCode == KeyCode.ESCAPE || keyCode == KeyCode.ENTER) {
             return new ViewAction.Close();
         }
-        if (character == 'j' || keyCode == 65518) { // j or down
+        if (character == 'j' || keyCode == KeyCode.DOWN) {
             selectedIndex = Math.min(selectedIndex + 1, Math.max(0, visibleEntries().size() - 1));
-        } else if (character == 'k' || keyCode == 65517) { // k or up
+        } else if (character == 'k' || keyCode == KeyCode.UP) {
             selectedIndex = Math.max(0, selectedIndex - 1);
         } else if (character >= 32 && character < 127) {
             filter += character;
             selectedIndex = 0;
-        } else if (keyCode == 127 || keyCode == '\b') { // Backspace
+        } else if (keyCode == KeyCode.BACKSPACE) {
             if (!filter.isEmpty()) filter = filter.substring(0, filter.length() - 1);
         }
         return new ViewAction.None();

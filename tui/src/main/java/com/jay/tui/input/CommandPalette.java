@@ -2,6 +2,7 @@ package com.jay.tui.input;
 
 import com.jay.tui.commands.CommandRegistry;
 import dev.tamboui.layout.Rect;
+import dev.tamboui.tui.event.KeyCode;
 import dev.tamboui.style.Color;
 import dev.tamboui.style.Style;
 import dev.tamboui.terminal.Frame;
@@ -172,12 +173,12 @@ public class CommandPalette {
     }
 
     /** Handle keyboard input while the palette is visible. */
-    public boolean handleKey(char character, int keyCode, boolean ctrl, boolean alt) {
-        if (keyCode == 27) { hide(); return true; } // Esc
-        if (keyCode == '\r' || keyCode == '\n') { hide(); return true; } // Enter
-        if (keyCode == 65517) { selectPrev(); return true; } // Up
-        if (keyCode == 65518) { selectNext(); return true; } // Down
-        if (keyCode == 127 || keyCode == '\b') { backspaceQuery(); return true; } // Backspace
+    public boolean handleKey(char character, KeyCode keyCode, boolean ctrl, boolean alt) {
+        if (keyCode == KeyCode.ESCAPE) { hide(); return true; }
+        if (keyCode == KeyCode.ENTER) { hide(); return true; }
+        if (keyCode == KeyCode.UP) { selectPrev(); return true; }
+        if (keyCode == KeyCode.DOWN) { selectNext(); return true; }
+        if (keyCode == KeyCode.BACKSPACE) { backspaceQuery(); return true; }
         if (character >= 32 && character < 127 && !ctrl) {
             appendQuery(character);
             return true;

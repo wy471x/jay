@@ -14,6 +14,7 @@ import com.jay.tui.views.HelpOverlay;
 import com.jay.tui.views.ViewAction;
 import com.jay.tui.views.ViewStack;
 import dev.tamboui.tui.TuiRunner;
+import dev.tamboui.tui.event.KeyCode;
 import dev.tamboui.tui.event.KeyEvent;
 import dev.tamboui.tui.event.TickEvent;
 
@@ -48,6 +49,7 @@ public final class TuiApplication {
             runner.run(
                 (event, r) -> {
                     if (event instanceof TickEvent) {
+                        view.tick();
                         viewStack.tick();
                         return !appState.shuttingDown();
                     }
@@ -59,8 +61,8 @@ public final class TuiApplication {
                         char ch = keyEvent.character();
                         boolean ctrl = keyEvent.hasCtrl();
                         boolean alt = keyEvent.hasAlt();
-                        int code = keyEvent.code() != null
-                                ? keyEvent.code().ordinal() : 0;
+                        KeyCode code = keyEvent.code() != null
+                                ? keyEvent.code() : KeyCode.UNKNOWN;
 
                         // ── Modal stack input ──────────────────────
                         if (!viewStack.isEmpty()) {
@@ -94,13 +96,13 @@ public final class TuiApplication {
                             composer.startHistorySearch();
                             return true;
                         }
-                        if (code == 65743) {  // F1 → help
+                        if (code == KeyCode.F1) {  // F1 → help
                             viewStack.push(helpOverlay);
                             return true;
                         }
 
                         // ── Escape chain ───────────────────────────
-                        if (code == 27) { // Esc
+                        if (code == KeyCode.ESCAPE) { // Esc
                             var escAction = composer.handleEscape();
                             if (escAction == ComposerState.EscapeAction.CLOSE_SLASH_MENU) {
                                 slashMenu.updateFilter(appState);
@@ -114,11 +116,11 @@ public final class TuiApplication {
 
                         // ── History search mode ────────────────────
                         if (composer.historySearchActive()) {
-                            if (code == '\r' || code == '\n') {
+                            if (code == KeyCode.ENTER) {
                                 composer.acceptHistorySearch();
-                            } else if (code == 27) {
+                            } else if (code == KeyCode.ESCAPE) {
                                 composer.cancelHistorySearch();
-                            } else if (code == 127 || code == '\b') {
+                            } else if (code == KeyCode.BACKSPACE) {
                                 composer.historySearchBackspace();
                             } else if (ch >= 32 && ch < 127) {
                                 composer.historySearchAppend(ch);

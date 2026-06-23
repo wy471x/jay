@@ -43,10 +43,12 @@ public class TuiEngine implements HookSink {
         this.hookDispatcher = hookDispatcher;
     }
 
-    /** Start the engine on a new virtual thread and register as a HookSink. */
+    /** Start the engine on a new virtual thread and register as a HookSink if dispatcher is available. */
     public void start() {
         running.set(true);
-        hookDispatcher.addSink(this);
+        if (hookDispatcher != null) {
+            hookDispatcher.addSink(this);
+        }
         engineThread = Thread.ofVirtual()
                 .name("tui-engine")
                 .start(this::eventLoop);
@@ -55,7 +57,9 @@ public class TuiEngine implements HookSink {
     /** Request graceful shutdown. */
     public void shutdown() {
         running.set(false);
-        hookDispatcher.removeSink(this);
+        if (hookDispatcher != null) {
+            hookDispatcher.removeSink(this);
+        }
         if (engineThread != null) {
             engineThread.interrupt();
         }
@@ -76,7 +80,7 @@ public class TuiEngine implements HookSink {
     /** Emit the Initialized event after engine startup. */
     public void onEngineReady() {
         enqueue(new TuiEvent.Initialized(
-                List.of(), "", null, ""));
+                List.of(), "", com.jay.agent.ProviderKind.DEEPSEEK, "deepseek-v4-flash"));
     }
 
     // ── HookSink ──────────────────────────────────────────────────
