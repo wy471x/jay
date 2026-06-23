@@ -25,6 +25,7 @@
   <img src="https://img.shields.io/badge/TamboUI-0.3.0-6366F1?style=flat-square" alt="TamboUI">
   <img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT License">
   <img src="https://img.shields.io/badge/modules-17-6C8EBF?style=flat-square" alt="17 modules">
+  <img src="https://img.shields.io/badge/coverage-45%25-yellow?style=flat-square" alt="45% line coverage">
 </p>
 
 ---
@@ -177,6 +178,20 @@ gradle :hooks:test
 gradle :tui:test
 ```
 
+### Code coverage
+
+Coverage is measured with [JaCoCo](https://www.jacoco.org/jacoco/). Every `gradle test` run produces per-module reports at `build/reports/jacoco/test/`. To generate an aggregated report across all modules:
+
+```bash
+# Run tests + aggregated coverage report (XML, HTML, CSV)
+gradle test jacocoAggregateReport
+
+# Open the HTML report
+open build/reports/jacoco/jacocoAggregateReport/html/index.html
+```
+
+Aggregate report output goes to `build/reports/jacoco/jacocoAggregateReport/`.
+
 ### Key conventions
 
 - **Java 21** sealed interfaces + records for algebraic data types
@@ -223,7 +238,7 @@ web              (standalone — Next.js frontend, depends on server REST API)
 | JSON | Jackson 2.18 |
 | Database | SQLite via JDBC + Flyway |
 | CLI | Picocli |
-| Testing | JUnit Jupiter 5.11 + MockMvc |
+| Testing | JUnit Jupiter 5.11 + MockMvc + JaCoCo |
 | Security | JDK KeyStore + AES-GCM |
 | Code Quality | Checkstyle 10.21 (SkyWalking rules) |
 
