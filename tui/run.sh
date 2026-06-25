@@ -56,5 +56,6 @@ CLASSPATH="${PROJECT_JARS}${TAMBOUI_JARS}${DEP_JARS}"
 
 echo "==> Starting TUI..."
 exec java --enable-native-access=ALL-UNNAMED \
+  -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 \
   --class-path "$CLASSPATH" \
   com.jay.tui.TuiApplication "$@"

@@ -76,7 +76,7 @@ public class HelpOverlay implements ModalView {
             selectedIndex = Math.min(selectedIndex + 1, Math.max(0, visibleEntries().size() - 1));
         } else if (character == 'k' || keyCode == KeyCode.UP) {
             selectedIndex = Math.max(0, selectedIndex - 1);
-        } else if (character >= 32 && character < 127) {
+        } else if (character >= 32 && !Character.isISOControl(character)) {
             filter += character;
             selectedIndex = 0;
         } else if (keyCode == KeyCode.BACKSPACE) {

@@ -14,4 +14,7 @@ dependencies {
     implementation("dev.tamboui:tamboui-tui:0.3.0")
     implementation("dev.tamboui:tamboui-widgets:0.3.0")
     implementation("dev.tamboui:tamboui-panama-backend:0.3.0")
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

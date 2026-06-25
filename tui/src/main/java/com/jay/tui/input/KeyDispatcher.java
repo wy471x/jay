@@ -52,8 +52,8 @@ public class KeyDispatcher {
         return Optional.empty();
     }
 
-    /** Check if a character is printable. */
+    /** Check if a character is printable (includes Unicode/CJK). */
     public static boolean isPrintable(char c) {
-        return c >= 32 && c < 127;
+        return c >= 32 && !Character.isISOControl(c);
     }
 }

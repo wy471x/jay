@@ -179,7 +179,7 @@ public class CommandPalette {
         if (keyCode == KeyCode.UP) { selectPrev(); return true; }
         if (keyCode == KeyCode.DOWN) { selectNext(); return true; }
         if (keyCode == KeyCode.BACKSPACE) { backspaceQuery(); return true; }
-        if (character >= 32 && character < 127 && !ctrl) {
+        if (KeyDispatcher.isPrintable(character) && !ctrl) {
             appendQuery(character);
             return true;
         }

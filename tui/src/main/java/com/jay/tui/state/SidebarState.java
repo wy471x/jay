@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class SidebarState {
 
-    private boolean visible = true;
+    private boolean visible;
     private int width = 30;
     private int selectedIndex;
     private List<Thread> threads = List.of();
