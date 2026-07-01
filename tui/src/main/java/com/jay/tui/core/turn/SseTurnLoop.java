@@ -6,6 +6,7 @@ import com.jay.tui.core.StreamState;
 import com.jay.tui.core.TuiEngineEvent;
 import com.jay.tui.core.TurnContext;
 import com.jay.tui.core.compaction.CompactionConfig;
+import com.jay.tui.core.compaction.CompactionExecutor;
 import com.jay.tui.core.compaction.CompactionPlanner;
 
 import java.util.ArrayList;
@@ -188,18 +189,36 @@ public class SseTurnLoop {
 
     private void checkCompaction() {
         if (compactionPlanner.shouldCompact(sessionMessages)) {
-            var plan = compactionPlanner.plan(sessionMessages);
+            var plan = compactionPlanner.planCompaction(sessionMessages);
             emit(new TuiEngineEvent.CompactionStarted(
                     "auto", true, plan.description()));
 
-            // In the real implementation:
-            // 1. Build summary prompt from messages-to-summarize
-            // 2. Call LLM to summarize
-            // 3. Replace summarized messages with summary message
+            // Build the executor and run safe compaction
+            // Note: full LLM-based compaction requires an LlmClient.
+            // For now, emit the plan and do local tool-result pruning as a quick win.
+            int before = sessionMessages.size();
+            boolean localOnly = true; // set to false when LlmClient is wired in
+
+            if (localOnly) {
+                // Local padding: truncate tool results in the summarize range
+                for (int idx : plan.summarizeIndices()) {
+                    if (idx < sessionMessages.size()) {
+                        var msg = sessionMessages.get(idx);
+                        if ("tool".equals(msg.role()) && msg.content() != null
+                                && msg.content().length() > MAX_TOOL_RESULT_CHARS) {
+                            String truncated = com.jay.tui.core.compaction.CompactionExecutor
+                                    .headTailTruncate(msg.content(),
+                                            TOOL_RESULT_HEAD_CHARS, TOOL_RESULT_TAIL_CHARS);
+                            sessionMessages.set(idx,
+                                    com.jay.tui.client.ChatMessage.tool(msg.toolCallId(), truncated));
+                        }
+                    }
+                }
+            }
 
             emit(new TuiEngineEvent.CompactionCompleted(
                     "auto", true, plan.description(),
-                    plan.messagesBefore(), plan.messagesAfter()));
+                    before, sessionMessages.size()));
         }
     }
 
@@ -208,10 +227,8 @@ public class SseTurnLoop {
         if (content == null || content.length() <= MAX_TOOL_RESULT_CHARS) {
             return content;
         }
-        return content.substring(0, TOOL_RESULT_HEAD_CHARS)
-                + "\n... [truncated " + (content.length() - TOOL_RESULT_HEAD_CHARS
-                    - TOOL_RESULT_TAIL_CHARS) + " chars] ...\n"
-                + content.substring(content.length() - TOOL_RESULT_TAIL_CHARS);
+        return com.jay.tui.core.compaction.CompactionExecutor.headTailTruncate(
+                content, TOOL_RESULT_HEAD_CHARS, TOOL_RESULT_TAIL_CHARS);
     }
 
     private void emit(TuiEngineEvent event) {

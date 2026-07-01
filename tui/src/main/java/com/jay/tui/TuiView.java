@@ -49,6 +49,11 @@ public class TuiView {
         transcriptLines.add(line);
     }
 
+    /** Get a copy of the transcript buffer lines (for testing). */
+    public List<String> getTranscriptLines() {
+        return List.copyOf(transcriptLines);
+    }
+
     public void tick() {
         header.tick();
         composer.tick();

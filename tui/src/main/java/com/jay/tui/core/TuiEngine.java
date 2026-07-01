@@ -4,7 +4,13 @@ import com.jay.hooks.HookDispatcher;
 import com.jay.hooks.HookEvent;
 import com.jay.hooks.HookSink;
 import com.jay.tui.client.ChatMessage;
+import com.jay.tui.core.compaction.CompactionConfig;
+import com.jay.tui.core.compaction.CompactionExecutor;
+import com.jay.tui.core.seam.SeamConfig;
+import com.jay.tui.core.seam.SeamManager;
+import com.jay.tui.core.turn.SseTurnLoop;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -32,6 +38,8 @@ public class TuiEngine {
     private final Session session;
     private final AtomicBoolean running;
     private final HookDispatcher hookDispatcher;
+    private final SeamManager seamManager;
+    private long lastSeamCheckMs;
 
     /** Create the engine, create the handle, but don't start yet. */
     public TuiEngine(EngineConfig config) {
@@ -47,6 +55,10 @@ public class TuiEngine {
         );
         this.running = new AtomicBoolean(false);
         this.hookDispatcher = hookDispatcher;
+        this.seamManager = new SeamManager(null, // Flash client wired when available
+                config.seam() != null ? config.seam() : SeamConfig.disabled(),
+                handle.eventQueue());
+        this.lastSeamCheckMs = System.currentTimeMillis();
     }
 
     /**
@@ -84,7 +96,10 @@ public class TuiEngine {
         while (running.get()) {
             try {
                 TuiEngineOp op = handle.opQueue().poll(100, TimeUnit.MILLISECONDS);
-                if (op == null) continue;
+                if (op == null) {
+                    maybeProduceSeam();
+                    continue;
+                }
                 processOp(op);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -124,25 +139,36 @@ public class TuiEngine {
         session.setTrustMode(op.trustMode());
         session.setAutoApprove(op.autoApprove());
 
-        // Add user message to session
-        session.addMessage(ChatMessage.user(op.content()));
-
-        // Create turn context
+        // Create turn context and emit turn lifecycle start
         var turn = new TurnContext(config.maxSteps());
         emit(new TuiEngineEvent.TurnStarted(turn.turnId()));
         emit(new TuiEngineEvent.StatusMessage("Turn started — " + turn.turnId(), "info"));
 
-        // The actual SSE turn loop will be connected in Phase 3.
-        // For now, emit a placeholder response.
-        emit(new TuiEngineEvent.MessageStarted(0, "text"));
-        emit(new TuiEngineEvent.MessageDelta(0, "[Engine ready — SSE turn loop (Phase 3)]"));
-        emit(new TuiEngineEvent.MessageComplete(0, "text"));
+        // Wire SseTurnLoop with session messages, event queue, cancel token.
+        // SseTurnLoop mutates the list in-place; use the internal mutable list.
+        var compactionCfg = config.compaction() != null
+                ? config.compaction() : CompactionConfig.disabled();
+        var messages = session.mutableMessages();
+        var turnLoop = new SseTurnLoop(
+                handle.eventQueue(),
+                handle.cancelRequested(),
+                compactionCfg,
+                messages
+        );
 
-        session.addMessage(ChatMessage.assistant("[Engine ready — SSE turn loop (Phase 3)]"));
+        int steps = turnLoop.executeTurn(turn, op.content());
 
-        emit(new TuiEngineEvent.TurnComplete(
-                turn.turnId(), 0, 0,
-                TuiEngineEvent.TurnOutcomeStatus.COMPLETED, null
+        // Accumulate turn usage and bump revision after messages mutated by SseTurnLoop
+        session.addUsage(turn.inputTokens(), turn.outputTokens(), null, null);
+        session.bumpMessagesRevision();
+
+        if (turn.isCancelled()) {
+            emit(new TuiEngineEvent.TurnAborted(turn.turnId(), "cancelled"));
+        }
+        // Note: SseTurnLoop already emits TurnComplete — engine only emits extra context
+        emit(new TuiEngineEvent.SessionUpdated(
+                session.id(), session.messages().size(),
+                session.totalUsage().totalTokens()
         ));
     }
 
@@ -189,8 +215,42 @@ public class TuiEngine {
     private void handleCompactContext() {
         emit(new TuiEngineEvent.CompactionStarted("manual", false, "Manual compaction"));
         int before = session.messages().size();
-        emit(new TuiEngineEvent.CompactionCompleted(
-                "manual", false, "Compaction done", before, before));
+
+        var compactionCfg = config.compaction() != null
+                ? config.compaction() : CompactionConfig.disabled();
+
+        if (!compactionCfg.enabled()) {
+            emit(new TuiEngineEvent.StatusMessage(
+                    "Compaction is disabled. Enable with --compaction flag or /compact command.",
+                    "warn"));
+            return;
+        }
+
+        try {
+            var executor = new CompactionExecutor(null, compactionCfg,
+                    handle.eventQueue());
+            var result = executor.compactMessagesSafe(session.mutableMessages());
+
+            if (result.compacted()) {
+                session.replaceMessages(result.messages());
+                emit(new TuiEngineEvent.CompactionCompleted(
+                        "manual", false,
+                        "Compacted " + result.removedMessages().size() + " messages"
+                                + (result.retriesUsed() > 0 ? " (retries: " + result.retriesUsed() + ")" : ""),
+                        before, result.messages().size()));
+            } else if (result.retriesUsed() > 0) {
+                emit(new TuiEngineEvent.CompactionFailed(
+                        "manual", false,
+                        "Compaction failed after " + result.retriesUsed() + " retries"));
+            } else {
+                emit(new TuiEngineEvent.CompactionCompleted(
+                        "manual", false, "No compaction needed (below threshold)",
+                        before, before));
+            }
+        } catch (Exception e) {
+            emit(new TuiEngineEvent.CompactionFailed(
+                    "manual", false, e.getMessage()));
+        }
     }
 
     private void handleEditLastTurn(TuiEngineOp.EditLastTurn op) {
@@ -203,6 +263,89 @@ public class TuiEngine {
     private void handleShutdown() {
         running.set(false);
         emit(new TuiEngineEvent.StatusMessage("Engine shutting down", "info"));
+    }
+
+    // ── Seam detection ────────────────────────────────────────────────
+
+    /**
+     * Auto-detect and produce soft seams based on active input token estimate.
+     * Called from the event loop tick when idle. Mirrors Rust
+     * {@code maybe_produce_seam()}.
+     *
+     * <p>Checks every ~5 seconds to avoid excessive computation.
+     */
+    private void maybeProduceSeam() {
+        if (!seamManager.config().enabled()) return;
+
+        // Throttle checks to every 5 seconds
+        long now = System.currentTimeMillis();
+        if (now - lastSeamCheckMs < 5000) return;
+        lastSeamCheckMs = now;
+
+        var messages = session.mutableMessages();
+        if (messages.isEmpty()) return;
+
+        // Estimate active input tokens
+        int activeTokens = com.jay.tui.core.compaction.CompactionPlanner
+                .estimateTokensConservative(messages);
+
+        Integer level = seamManager.seamLevelFor(activeTokens);
+        if (level == null) return;
+
+        // Determine the message range to summarize: everything before verbatim window
+        int verbatimStart = seamManager.verbatimWindowStart(messages.size());
+        if (verbatimStart == 0) return; // nothing to summarize
+
+        // For levels > 1, check if we should recompact prior seams
+        if (level > 1) {
+            var existingSeams = SeamManager.collectSeamTexts(messages);
+            if (!existingSeams.isEmpty()) {
+                // Messages between prior seam coverage and verbatim start
+                var newMsgs = new ArrayList<ChatMessage>();
+                for (int i = existingSeams.size(); i < verbatimStart && i < messages.size(); i++) {
+                    newMsgs.add(messages.get(i));
+                }
+                try {
+                    String seamBlock = seamManager.recompact(
+                            existingSeams, newMsgs, level, 0, verbatimStart);
+                    if (!seamBlock.isEmpty()) {
+                        session.mutableMessages().add(ChatMessage.assistant(seamBlock));
+                        session.bumpMessagesRevision();
+                        emit(new TuiEngineEvent.SeamRecompacted(
+                                level, existingSeams.size(),
+                                seamBlock.length() / 4));
+                        emit(new TuiEngineEvent.StatusMessage(
+                                "Soft seam L" + level + " recompacted ("
+                                        + existingSeams.size() + " prior seams)",
+                                "info"));
+                    }
+                } catch (Exception e) {
+                    emit(new TuiEngineEvent.StatusMessage(
+                            "Seam recompact failed: " + e.getMessage(), "warn"));
+                }
+                return;
+            }
+        }
+
+        // First-time seam at this level
+        try {
+            String seamBlock = seamManager.produceSoftSeam(
+                    messages, level, 0, verbatimStart);
+            if (!seamBlock.isEmpty()) {
+                session.mutableMessages().add(ChatMessage.assistant(seamBlock));
+                session.bumpMessagesRevision();
+                emit(new TuiEngineEvent.SeamProduced(
+                        level, 0, verbatimStart,
+                        seamBlock.length() / 4, seamManager.config().seamModel()));
+                emit(new TuiEngineEvent.StatusMessage(
+                        "Soft seam L" + level + " produced (msgs 0-"
+                                + verbatimStart + ")", "info"));
+            }
+        } catch (Exception e) {
+            // Seam failure is non-fatal — continue without seam
+            emit(new TuiEngineEvent.StatusMessage(
+                    "Seam production failed: " + e.getMessage(), "warn"));
+        }
     }
 
     // ── Helpers ──────────────────────────────────────────────────────

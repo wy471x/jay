@@ -1,6 +1,7 @@
 package com.jay.tui.core;
 
 import com.jay.tui.core.compaction.CompactionConfig;
+import com.jay.tui.core.seam.SeamConfig;
 
 import java.nio.file.Path;
 
@@ -28,6 +29,7 @@ public class EngineConfig {
     private final int streamChunkTimeoutSecs;
     private final boolean showThinking;
     private final boolean memoryEnabled;
+    private final SeamConfig seam;
 
     private EngineConfig(Builder builder) {
         this.model = builder.model;
@@ -40,6 +42,7 @@ public class EngineConfig {
         this.streamChunkTimeoutSecs = builder.streamChunkTimeoutSecs;
         this.showThinking = builder.showThinking;
         this.memoryEnabled = builder.memoryEnabled;
+        this.seam = builder.seam;
     }
 
     // ── Getters ───────────────────────────────────────────────────────
@@ -54,6 +57,7 @@ public class EngineConfig {
     public int streamChunkTimeoutSecs() { return streamChunkTimeoutSecs; }
     public boolean showThinking() { return showThinking; }
     public boolean memoryEnabled() { return memoryEnabled; }
+    public SeamConfig seam() { return seam; }
 
     public static Builder builder() { return new Builder(); }
 
@@ -64,10 +68,11 @@ public class EngineConfig {
         private boolean trustMode;
         private boolean autoApprove;
         private int maxSteps = 100;
-        private CompactionConfig compaction = CompactionConfig.disabled();
+        private CompactionConfig compaction = CompactionConfig.defaultConfig();
         private int streamChunkTimeoutSecs = 45;
         private boolean showThinking = true;
         private boolean memoryEnabled = true;
+        private SeamConfig seam = SeamConfig.defaultConfig();
 
         public Builder model(String model) { this.model = model; return this; }
         public Builder workspace(Path ws) { this.workspace = ws; return this; }
@@ -79,6 +84,7 @@ public class EngineConfig {
         public Builder streamChunkTimeoutSecs(int s) { this.streamChunkTimeoutSecs = s; return this; }
         public Builder showThinking(boolean v) { this.showThinking = v; return this; }
         public Builder memoryEnabled(boolean v) { this.memoryEnabled = v; return this; }
+        public Builder seam(SeamConfig s) { this.seam = s; return this; }
 
         public EngineConfig build() { return new EngineConfig(this); }
     }

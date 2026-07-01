@@ -121,6 +121,16 @@ public sealed interface TuiEngineEvent {
     /** Resume terminal input after interactive subprocess. */
     record ResumeEvents() implements TuiEngineEvent {}
 
+    // ── Seam events (append-only layered context) ─────────────────
+
+    /** A soft seam (archived_context block) was produced. */
+    record SeamProduced(int level, int startIdx, int endIdx,
+                        int tokenEstimate, String model) implements TuiEngineEvent {}
+
+    /** A soft seam recompaction was performed. */
+    record SeamRecompacted(int level, int priorSeamCount,
+                           int tokenEstimate) implements TuiEngineEvent {}
+
     /** Tool result wrapper carried in events. */
     record ToolResult(String id, String name, String content, boolean success, String error) {
         public static ToolResult success(String id, String name, String content) {

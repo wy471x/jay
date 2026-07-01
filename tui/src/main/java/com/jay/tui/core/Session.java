@@ -106,6 +106,9 @@ public class Session {
 
     public List<ChatMessage> messages() { return List.copyOf(messages); }
 
+    /** Return the internal mutable list for engine-internal use (SseTurnLoop). */
+    public List<ChatMessage> mutableMessages() { return messages; }
+
     public long messagesRevision() { return messagesRevision.get(); }
 
     public SessionUsage totalUsage() { return totalUsage; }

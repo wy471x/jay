@@ -736,11 +736,13 @@ class LogicPipelineTest {
             var config = CompactionConfig.of(true, 20, "model");
             var planner = new CompactionPlanner(config);
 
-            // 100 chars → ~25 tokens → above threshold of 20
-            var messages = List.of(
-                    ChatMessage.user("A".repeat(50)),
-                    ChatMessage.assistant("B".repeat(50))
-            );
+            // Need >= MIN_SUMMARIZE_MESSAGES (6) messages, plus KEEP_RECENT (4) pinned
+            // 15 messages → 4 pinned, 11 to summarize
+            var messages = new ArrayList<ChatMessage>();
+            for (int i = 0; i < 15; i++) {
+                messages.add(ChatMessage.user("This is a long message number "
+                        + i + " with extra text to push past token threshold"));
+            }
             assertTrue(planner.shouldCompact(messages));
 
             // Empty messages
@@ -761,13 +763,13 @@ class LogicPipelineTest {
 
             var config = CompactionConfig.of(true, 1000, "model");
             var planner = new CompactionPlanner(config);
-            var plan = planner.plan(messages);
+            var plan = planner.planCompaction(messages);
 
-            // 25 messages → 10 pinned, 15 summarized
-            assertEquals(15, plan.toSummarizeIndices().size());
-            assertEquals(10, plan.pinnedIndices().size());
-            // Pinned indices should be [15, 16, 17, ..., 24]
-            assertEquals(15, plan.pinnedIndices().get(0));
+            // 25 messages → 4 pinned (KEEP_RECENT=4), 21 summarized
+            assertEquals(21, plan.summarizeIndices().size());
+            assertEquals(4, plan.pinnedIndices().size());
+            // Pinned indices should be [21, 22, 23, 24]
+            assertEquals(21, plan.pinnedIndices().get(0));
             assertEquals(24, plan.pinnedIndices().get(plan.pinnedIndices().size() - 1));
         }
     }
